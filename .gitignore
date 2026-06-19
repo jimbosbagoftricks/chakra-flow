@@ -1,0 +1,12 @@
+# macOS / local editor noise
+.DS_Store
+**/.DS_Store
+*.swp
+*.swo
+*~
+
+# Local Claude/Codex session settings
+.claude/settings.local.json
+
+# Build scratch files
+.build/_m_*

@@ -1,0 +1,1218 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Sahasrāra-chakra image created by Holger Koch http://www.premaloka.de/kontakt License: public domain -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="700px"
+   height="700px"
+   id="svg5996"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="chakra7.svg">
+  <metadata
+     id="metadata6542">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Sahasrāra Chakra</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview6540"
+     showgrid="false"
+     inkscape:zoom="0.33714286"
+     inkscape:cx="350"
+     inkscape:cy="350"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg5996" />
+  <title
+     id="title5998">Sahasrāra Chakra</title>
+  <defs
+     id="defs6000">
+    <filter
+       id="blur"
+       x="-40%"
+       y="-40%"
+       width="200%"
+       height="200%">
+      <feGaussianBlur
+         in="SourceGraphic"
+         stdDeviation="14"
+         id="feGaussianBlur6003" />
+    </filter>
+    <radialGradient
+       id="grad"
+       gradientUnits="userSpaceOnUse"
+       cx="350"
+       cy="350"
+       r="140">
+      <stop
+         offset="0%"
+         stop-color="#f6eafb"
+         id="stop6006" />
+      <stop
+         offset="70%"
+         stop-color="#a92dd2"
+         id="stop6008" />
+    </radialGradient>
+    <radialGradient
+       id="grad8"
+       gradientUnits="userSpaceOnUse"
+       cx="350"
+       cy="350"
+       r="350">
+      <stop
+         offset="93%"
+         stop-color="#d496e9"
+         id="stop6011" />
+      <stop
+         offset="96%"
+         stop-color="#9828bd"
+         id="stop6013" />
+    </radialGradient>
+    <radialGradient
+       id="grad7"
+       gradientUnits="userSpaceOnUse"
+       cx="350"
+       cy="350"
+       r="350">
+      <stop
+         offset="89%"
+         stop-color="#d496e9"
+         id="stop6016" />
+      <stop
+         offset="93.5%"
+         stop-color="#9828bd"
+         id="stop6018" />
+    </radialGradient>
+    <radialGradient
+       id="grad6"
+       gradientUnits="userSpaceOnUse"
+       cx="350"
+       cy="350"
+       r="350">
+      <stop
+         offset="83%"
+         stop-color="#d496e9"
+         id="stop6021" />
+      <stop
+         offset="89.5%"
+         stop-color="#9828bd"
+         id="stop6023" />
+    </radialGradient>
+    <radialGradient
+       id="grad5"
+       gradientUnits="userSpaceOnUse"
+       cx="350"
+       cy="350"
+       r="350">
+      <stop
+         offset="75%"
+         stop-color="#d496e9"
+         id="stop6026" />
+      <stop
+         offset="81.5%"
+         stop-color="#9828bd"
+         id="stop6028" />
+    </radialGradient>
+    <radialGradient
+       id="grad4"
+       gradientUnits="userSpaceOnUse"
+       cx="350"
+       cy="350"
+       r="350">
+      <stop
+         offset="69%"
+         stop-color="#d496e9"
+         id="stop6031" />
+      <stop
+         offset="76.5%"
+         stop-color="#9828bd"
+         id="stop6033" />
+    </radialGradient>
+    <radialGradient
+       id="grad3"
+       gradientUnits="userSpaceOnUse"
+       cx="350"
+       cy="350"
+       r="350">
+      <stop
+         offset="59%"
+         stop-color="#d496e9"
+         id="stop6036" />
+      <stop
+         offset="67.5%"
+         stop-color="#9828bd"
+         id="stop6038" />
+    </radialGradient>
+    <radialGradient
+       id="grad2"
+       gradientUnits="userSpaceOnUse"
+       cx="350"
+       cy="350"
+       r="350">
+      <stop
+         offset="52%"
+         stop-color="#d496e9"
+         id="stop6041" />
+      <stop
+         offset="60.5%"
+         stop-color="#9828bd"
+         id="stop6043" />
+    </radialGradient>
+    <radialGradient
+       id="grad1"
+       gradientUnits="userSpaceOnUse"
+       cx="350"
+       cy="350"
+       r="350">
+      <stop
+         offset="40%"
+         stop-color="#d496e9"
+         id="stop6046" />
+      <stop
+         offset="50%"
+         stop-color="#9828bd"
+         id="stop6048" />
+    </radialGradient>
+    <path
+       id="petal8"
+       stroke-linejoin="round"
+       stroke-width="4"
+       stroke="#651b7e"
+       fill="url(#grad8)"
+       d="M 334.02847200643 24.892079005216 C 334.02847200643,10.192079005216 350,18.2 350,3.5 C 350,18.2 365.97152799357,10.192079005216 365.97152799357,24.892079005216 L 350 350 Z" />
+    <path
+       id="petal7"
+       stroke-linejoin="round"
+       stroke-width="4"
+       stroke="#651b7e"
+       fill="url(#grad7)"
+       d="M 334.71541944701 38.875215392089 C 334.71541944701,16.825215392089 350,29.05 350,7 C 350,29.05 365.28458055299,16.825215392089 365.28458055299,38.875215392089 L 350 350 Z" />
+    <path
+       id="petal6"
+       stroke-linejoin="round"
+       stroke-width="4"
+       stroke="#651b7e"
+       fill="url(#grad6)"
+       d="M 321.52602073426 60.898836901727 C 321.52602073426,29.048836901727 350,45.85 350,14 C 350,45.85 378.47397926574,29.048836901727 378.47397926574,60.898836901727 L 350 350 Z" />
+    <path
+       id="petal5"
+       stroke-linejoin="round"
+       stroke-width="4"
+       stroke="#651b7e"
+       fill="url(#grad5)"
+       d="M 324.27050066349 88.764009248548 C 324.27050066349,56.914009248548 350,73.85 350,42 C 350,73.85 375.72949933651,56.914009248548 375.72949933651,88.764009248548 L 350 350 Z" />
+    <path
+       id="petal4"
+       stroke-linejoin="round"
+       stroke-width="4"
+       stroke="#651b7e"
+       fill="url(#grad4)"
+       d="M 302.88568723311 113.14035478262 C 302.88568723311,76.39035478262 350,92.75 350,56 C 350,92.75 397.11431276689,76.39035478262 397.11431276689,113.14035478262 L 350 350 Z" />
+    <path
+       id="petal3"
+       stroke-linejoin="round"
+       stroke-width="4"
+       stroke="#651b7e"
+       fill="url(#grad3)"
+       d="M 309.71384850367 147.46783959673 C 309.71384850367,105.81783959673 350,125.65 350,84 C 350,125.65 390.28615149633,105.81783959673 390.28615149633,147.46783959673 L 350 350 Z" />
+    <path
+       id="petal2"
+       stroke-linejoin="round"
+       stroke-width="4"
+       stroke="#651b7e"
+       fill="url(#grad2)"
+       d="M 280.35161530955 181.85392508295 C 280.35161530955,140.20392508295 350,150.15 350,108.5 C 350,150.15 419.64838469045,140.20392508295 419.64838469045,181.85392508295 L 350 350 Z" />
+    <path
+       id="petal1"
+       stroke-linejoin="round"
+       stroke-width="4"
+       stroke="#651b7e"
+       fill="url(#grad1)"
+       d="M 296.42431946889 220.65686544842 C 296.42431946889,171.65686544842 350,189 350,140 C 350,189 403.57568053111,171.65686544842 403.57568053111,220.65686544842 L 350 350 Z" />
+  </defs>
+  <use
+     xlink:href="#petal8"
+     id="use6058" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(5.625 350 350)"
+     id="use6060" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(11.25 350 350)"
+     id="use6062" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(16.875 350 350)"
+     id="use6064" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(22.5 350 350)"
+     id="use6066" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(28.125 350 350)"
+     id="use6068" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(33.75 350 350)"
+     id="use6070" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(39.375 350 350)"
+     id="use6072" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(45 350 350)"
+     id="use6074" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(50.625 350 350)"
+     id="use6076" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(56.25 350 350)"
+     id="use6078" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(61.875 350 350)"
+     id="use6080" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(67.5 350 350)"
+     id="use6082" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(73.125 350 350)"
+     id="use6084" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(78.75 350 350)"
+     id="use6086" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(84.375 350 350)"
+     id="use6088" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(90 350 350)"
+     id="use6090" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(95.625 350 350)"
+     id="use6092" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(101.25 350 350)"
+     id="use6094" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(106.875 350 350)"
+     id="use6096" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(112.5 350 350)"
+     id="use6098" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(118.125 350 350)"
+     id="use6100" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(123.75 350 350)"
+     id="use6102" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(129.375 350 350)"
+     id="use6104" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(135 350 350)"
+     id="use6106" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(140.625 350 350)"
+     id="use6108" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(146.25 350 350)"
+     id="use6110" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(151.875 350 350)"
+     id="use6112" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(157.5 350 350)"
+     id="use6114" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(163.125 350 350)"
+     id="use6116" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(168.75 350 350)"
+     id="use6118" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(174.375 350 350)"
+     id="use6120" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(180 350 350)"
+     id="use6122" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(185.625 350 350)"
+     id="use6124" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(191.25 350 350)"
+     id="use6126" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(196.875 350 350)"
+     id="use6128" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(202.5 350 350)"
+     id="use6130" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(208.125 350 350)"
+     id="use6132" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(213.75 350 350)"
+     id="use6134" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(219.375 350 350)"
+     id="use6136" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(225 350 350)"
+     id="use6138" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(230.625 350 350)"
+     id="use6140" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(236.25 350 350)"
+     id="use6142" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(241.875 350 350)"
+     id="use6144" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(247.5 350 350)"
+     id="use6146" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(253.125 350 350)"
+     id="use6148" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(258.75 350 350)"
+     id="use6150" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(264.375 350 350)"
+     id="use6152" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(270 350 350)"
+     id="use6154" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(275.625 350 350)"
+     id="use6156" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(281.25 350 350)"
+     id="use6158" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(286.875 350 350)"
+     id="use6160" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(292.5 350 350)"
+     id="use6162" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(298.125 350 350)"
+     id="use6164" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(303.75 350 350)"
+     id="use6166" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(309.375 350 350)"
+     id="use6168" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(315 350 350)"
+     id="use6170" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(320.625 350 350)"
+     id="use6172" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(326.25 350 350)"
+     id="use6174" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(331.875 350 350)"
+     id="use6176" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(337.5 350 350)"
+     id="use6178" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(343.125 350 350)"
+     id="use6180" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(348.75 350 350)"
+     id="use6182" />
+  <use
+     xlink:href="#petal8"
+     transform="rotate(354.375 350 350)"
+     id="use6184" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(2.8125 350 350)"
+     id="use6186" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(8.4375 350 350)"
+     id="use6188" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(14.0625 350 350)"
+     id="use6190" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(19.6875 350 350)"
+     id="use6192" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(25.3125 350 350)"
+     id="use6194" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(30.9375 350 350)"
+     id="use6196" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(36.5625 350 350)"
+     id="use6198" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(42.1875 350 350)"
+     id="use6200" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(47.8125 350 350)"
+     id="use6202" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(53.4375 350 350)"
+     id="use6204" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(59.0625 350 350)"
+     id="use6206" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(64.6875 350 350)"
+     id="use6208" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(70.3125 350 350)"
+     id="use6210" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(75.9375 350 350)"
+     id="use6212" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(81.5625 350 350)"
+     id="use6214" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(87.1875 350 350)"
+     id="use6216" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(92.8125 350 350)"
+     id="use6218" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(98.4375 350 350)"
+     id="use6220" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(104.0625 350 350)"
+     id="use6222" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(109.6875 350 350)"
+     id="use6224" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(115.3125 350 350)"
+     id="use6226" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(120.9375 350 350)"
+     id="use6228" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(126.5625 350 350)"
+     id="use6230" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(132.1875 350 350)"
+     id="use6232" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(137.8125 350 350)"
+     id="use6234" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(143.4375 350 350)"
+     id="use6236" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(149.0625 350 350)"
+     id="use6238" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(154.6875 350 350)"
+     id="use6240" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(160.3125 350 350)"
+     id="use6242" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(165.9375 350 350)"
+     id="use6244" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(171.5625 350 350)"
+     id="use6246" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(177.1875 350 350)"
+     id="use6248" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(182.8125 350 350)"
+     id="use6250" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(188.4375 350 350)"
+     id="use6252" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(194.0625 350 350)"
+     id="use6254" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(199.6875 350 350)"
+     id="use6256" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(205.3125 350 350)"
+     id="use6258" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(210.9375 350 350)"
+     id="use6260" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(216.5625 350 350)"
+     id="use6262" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(222.1875 350 350)"
+     id="use6264" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(227.8125 350 350)"
+     id="use6266" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(233.4375 350 350)"
+     id="use6268" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(239.0625 350 350)"
+     id="use6270" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(244.6875 350 350)"
+     id="use6272" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(250.3125 350 350)"
+     id="use6274" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(255.9375 350 350)"
+     id="use6276" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(261.5625 350 350)"
+     id="use6278" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(267.1875 350 350)"
+     id="use6280" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(272.8125 350 350)"
+     id="use6282" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(278.4375 350 350)"
+     id="use6284" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(284.0625 350 350)"
+     id="use6286" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(289.6875 350 350)"
+     id="use6288" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(295.3125 350 350)"
+     id="use6290" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(300.9375 350 350)"
+     id="use6292" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(306.5625 350 350)"
+     id="use6294" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(312.1875 350 350)"
+     id="use6296" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(317.8125 350 350)"
+     id="use6298" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(323.4375 350 350)"
+     id="use6300" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(329.0625 350 350)"
+     id="use6302" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(334.6875 350 350)"
+     id="use6304" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(340.3125 350 350)"
+     id="use6306" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(345.9375 350 350)"
+     id="use6308" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(351.5625 350 350)"
+     id="use6310" />
+  <use
+     xlink:href="#petal7"
+     transform="rotate(357.1875 350 350)"
+     id="use6312" />
+  <use
+     xlink:href="#petal6"
+     id="use6314" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(11.25 350 350)"
+     id="use6316" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(22.5 350 350)"
+     id="use6318" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(33.75 350 350)"
+     id="use6320" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(45 350 350)"
+     id="use6322" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(56.25 350 350)"
+     id="use6324" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(67.5 350 350)"
+     id="use6326" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(78.75 350 350)"
+     id="use6328" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(90 350 350)"
+     id="use6330" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(101.25 350 350)"
+     id="use6332" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(112.5 350 350)"
+     id="use6334" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(123.75 350 350)"
+     id="use6336" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(135 350 350)"
+     id="use6338" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(146.25 350 350)"
+     id="use6340" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(157.5 350 350)"
+     id="use6342" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(168.75 350 350)"
+     id="use6344" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(180 350 350)"
+     id="use6346" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(191.25 350 350)"
+     id="use6348" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(202.5 350 350)"
+     id="use6350" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(213.75 350 350)"
+     id="use6352" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(225 350 350)"
+     id="use6354" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(236.25 350 350)"
+     id="use6356" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(247.5 350 350)"
+     id="use6358" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(258.75 350 350)"
+     id="use6360" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(270 350 350)"
+     id="use6362" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(281.25 350 350)"
+     id="use6364" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(292.5 350 350)"
+     id="use6366" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(303.75 350 350)"
+     id="use6368" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(315 350 350)"
+     id="use6370" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(326.25 350 350)"
+     id="use6372" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(337.5 350 350)"
+     id="use6374" />
+  <use
+     xlink:href="#petal6"
+     transform="rotate(348.75 350 350)"
+     id="use6376" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(5.625 350 350)"
+     id="use6378" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(16.875 350 350)"
+     id="use6380" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(28.125 350 350)"
+     id="use6382" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(39.375 350 350)"
+     id="use6384" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(50.625 350 350)"
+     id="use6386" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(61.875 350 350)"
+     id="use6388" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(73.125 350 350)"
+     id="use6390" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(84.375 350 350)"
+     id="use6392" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(95.625 350 350)"
+     id="use6394" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(106.875 350 350)"
+     id="use6396" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(118.125 350 350)"
+     id="use6398" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(129.375 350 350)"
+     id="use6400" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(140.625 350 350)"
+     id="use6402" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(151.875 350 350)"
+     id="use6404" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(163.125 350 350)"
+     id="use6406" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(174.375 350 350)"
+     id="use6408" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(185.625 350 350)"
+     id="use6410" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(196.875 350 350)"
+     id="use6412" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(208.125 350 350)"
+     id="use6414" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(219.375 350 350)"
+     id="use6416" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(230.625 350 350)"
+     id="use6418" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(241.875 350 350)"
+     id="use6420" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(253.125 350 350)"
+     id="use6422" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(264.375 350 350)"
+     id="use6424" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(275.625 350 350)"
+     id="use6426" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(286.875 350 350)"
+     id="use6428" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(298.125 350 350)"
+     id="use6430" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(309.375 350 350)"
+     id="use6432" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(320.625 350 350)"
+     id="use6434" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(331.875 350 350)"
+     id="use6436" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(343.125 350 350)"
+     id="use6438" />
+  <use
+     xlink:href="#petal5"
+     transform="rotate(354.375 350 350)"
+     id="use6440" />
+  <use
+     xlink:href="#petal4"
+     id="use6442" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(22.5 350 350)"
+     id="use6444" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(45 350 350)"
+     id="use6446" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(67.5 350 350)"
+     id="use6448" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(90 350 350)"
+     id="use6450" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(112.5 350 350)"
+     id="use6452" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(135 350 350)"
+     id="use6454" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(157.5 350 350)"
+     id="use6456" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(180 350 350)"
+     id="use6458" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(202.5 350 350)"
+     id="use6460" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(225 350 350)"
+     id="use6462" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(247.5 350 350)"
+     id="use6464" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(270 350 350)"
+     id="use6466" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(292.5 350 350)"
+     id="use6468" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(315 350 350)"
+     id="use6470" />
+  <use
+     xlink:href="#petal4"
+     transform="rotate(337.5 350 350)"
+     id="use6472" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(11.25 350 350)"
+     id="use6474" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(33.75 350 350)"
+     id="use6476" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(56.25 350 350)"
+     id="use6478" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(78.75 350 350)"
+     id="use6480" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(101.25 350 350)"
+     id="use6482" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(123.75 350 350)"
+     id="use6484" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(146.25 350 350)"
+     id="use6486" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(168.75 350 350)"
+     id="use6488" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(191.25 350 350)"
+     id="use6490" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(213.75 350 350)"
+     id="use6492" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(236.25 350 350)"
+     id="use6494" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(258.75 350 350)"
+     id="use6496" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(281.25 350 350)"
+     id="use6498" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(303.75 350 350)"
+     id="use6500" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(326.25 350 350)"
+     id="use6502" />
+  <use
+     xlink:href="#petal3"
+     transform="rotate(348.75 350 350)"
+     id="use6504" />
+  <use
+     xlink:href="#petal2"
+     id="use6506" />
+  <use
+     xlink:href="#petal2"
+     transform="rotate(45 350 350)"
+     id="use6508" />
+  <use
+     xlink:href="#petal2"
+     transform="rotate(90 350 350)"
+     id="use6510" />
+  <use
+     xlink:href="#petal2"
+     transform="rotate(135 350 350)"
+     id="use6512" />
+  <use
+     xlink:href="#petal2"
+     transform="rotate(180 350 350)"
+     id="use6514" />
+  <use
+     xlink:href="#petal2"
+     transform="rotate(225 350 350)"
+     id="use6516" />
+  <use
+     xlink:href="#petal2"
+     transform="rotate(270 350 350)"
+     id="use6518" />
+  <use
+     xlink:href="#petal2"
+     transform="rotate(315 350 350)"
+     id="use6520" />
+  <use
+     xlink:href="#petal1"
+     transform="rotate(22.5 350 350)"
+     id="use6522" />
+  <use
+     xlink:href="#petal1"
+     transform="rotate(67.5 350 350)"
+     id="use6524" />
+  <use
+     xlink:href="#petal1"
+     transform="rotate(112.5 350 350)"
+     id="use6526" />
+  <use
+     xlink:href="#petal1"
+     transform="rotate(157.5 350 350)"
+     id="use6528" />
+  <use
+     xlink:href="#petal1"
+     transform="rotate(202.5 350 350)"
+     id="use6530" />
+  <use
+     xlink:href="#petal1"
+     transform="rotate(247.5 350 350)"
+     id="use6532" />
+  <use
+     xlink:href="#petal1"
+     transform="rotate(292.5 350 350)"
+     id="use6534" />
+  <use
+     xlink:href="#petal1"
+     transform="rotate(337.5 350 350)"
+     id="use6536" />
+  <path
+     style="fill:url(#grad);stroke:#651b7e;stroke-width:7"
+     d="m 490,350 c 0,77.31986 -62.68014,140 -140,140 -77.31986,0 -140,-62.68014 -140,-140 0,-77.31986 62.68014,-140 140,-140 77.31986,0 140,62.68014 140,140 z"
+     id="circle6538" />
+</svg>

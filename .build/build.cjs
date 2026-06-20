@@ -75,29 +75,46 @@ const inlined =
   "<script>" + reactDom + "</script>\n" +
   "<script>\n" + assetsJs + "\n" + code + "\n</script>";
 
-// 7. Splice out everything from the first CDN <script> through the boot <script>,
+// 7. Splice out everything from the first runtime <script> through the boot <script>,
 //    replacing it with the inlined block. Keeps <head>, fonts, styles, #root.
-const cdnStart = html.indexOf('<script crossorigin src="https://unpkg.com/react@18');
+const runtimeStarts = [
+  html.indexOf('<script src="./vendor/react.js"></script>'),
+  html.indexOf('<script crossorigin src="https://unpkg.com/react@18'),
+].filter((i) => i !== -1);
+if (runtimeStarts.length === 0) throw new Error("Could not find runtime script block");
+const runtimeStart = Math.min(...runtimeStarts);
 const bootMarker = html.indexOf("Deterministic boot");
 const bootScriptStart = html.lastIndexOf("<script>", bootMarker);
 const bootScriptEnd = html.indexOf("</script>", bootScriptStart) + "</script>".length;
-let out = html.slice(0, cdnStart) + inlined + html.slice(bootScriptEnd);
+let out = html.slice(0, runtimeStart) + inlined + html.slice(bootScriptEnd);
 
-// 8. Inline fonts: replace the Google Fonts preconnects + stylesheet <link> with a
-//    <style> of base64 woff2 (from the fonts.cjs cache). Falls back to the CDN link
-//    if the cache is missing.
+// 8. Inline fonts: replace the source stylesheet link with a <style> of base64
+//    woff2 (from the fonts.cjs cache). Falls back to the source link if the
+//    cache is missing.
 const fontsCssPath = path.join(__dirname, "fonts-inlined.css");
 let fontsInlined = false;
 if (fs.existsSync(fontsCssPath)) {
   const fontsCss = fs.readFileSync(fontsCssPath, "utf8");
-  const fStart = out.indexOf('<link rel="preconnect" href="https://fonts.googleapis.com"');
-  const linkMark = 'rel="stylesheet" />';
-  const fEnd = out.indexOf(linkMark, fStart);
-  if (fStart !== -1 && fEnd !== -1) {
-    out = out.slice(0, fStart) + "<style>\n" + fontsCss + "</style>" + out.slice(fEnd + linkMark.length);
+  const localFontLink = '<link rel="stylesheet" href="./vendor/fonts-inlined.css" />';
+  const localStart = out.indexOf(localFontLink);
+  const googleStart = out.indexOf('<link rel="preconnect" href="https://fonts.googleapis.com"');
+  if (localStart !== -1) {
+    out = out.slice(0, localStart) + "<style>\n" + fontsCss + "</style>" + out.slice(localStart + localFontLink.length);
     fontsInlined = true;
+  } else if (googleStart !== -1) {
+    const linkMark = 'rel="stylesheet" />';
+    const fEnd = out.indexOf(linkMark, googleStart);
+    if (fEnd !== -1) {
+      out = out.slice(0, googleStart) + "<style>\n" + fontsCss + "</style>" + out.slice(fEnd + linkMark.length);
+      fontsInlined = true;
+    }
   }
 }
+
+// The standalone phone file should remain a true single-file fallback. PWA
+// manifest/icon/service-worker registration stays in index.html, the hosted app.
+out = out.replace(/\n<link[^>]*\bdata-pwa\b[^>]*>/g, "");
+out = out.replace(/\n<script\b[^>]*\bdata-pwa-registration\b[^>]*>[\s\S]*?<\/script>/, "");
 
 fs.writeFileSync(path.join(ROOT, "chakra-deck.html"), out, "utf8");
 

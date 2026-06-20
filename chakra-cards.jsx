@@ -30,8 +30,84 @@ const TONES = {
   thirdeye: { hz: 220.00, note: "A" }, crown: { hz: 246.94, note: "B" },
   close: { hz: 130.81, note: "C" },
 };
+const TONE_TUNING_STORAGE = "chakraToneTuning";
+const TONE_TUNINGS = {
+  standard: { label: "440", name: "Standard 440" },
+  soft432: { label: "432", name: "Soft 432" },
+};
+const TONE_432_RATIO = 432 / 440;
+
+function _readToneTuning() {
+  if (typeof window === "undefined") return "standard";
+  try {
+    const saved = window.localStorage.getItem(TONE_TUNING_STORAGE);
+    return TONE_TUNINGS[saved] ? saved : "standard";
+  } catch (e) {
+    return "standard";
+  }
+}
+
+function _saveToneTuning(tuning) {
+  try {
+    window.localStorage.setItem(TONE_TUNING_STORAGE, tuning);
+  } catch (e) {}
+}
+
+function _toneHz(cardId, tuning) {
+  const tone = TONES[cardId];
+  if (!tone) return null;
+  if (tuning !== "soft432") return tone.hz;
+  if (cardId === "open") return 136.07;
+  return tone.hz * TONE_432_RATIO;
+}
+
+const CHANT_AUDIO = {
+  inhaleGain: 0.1,
+  exhaleGain: 1,
+  markerGain: 0.5,
+  transition: 1.6,
+};
 
 let _drone = null;
+let _wakeLock = null;
+let _wakeLockWanted = false;
+let _wakeLockListening = false;
+
+function _wakeLockSupported() {
+  return typeof navigator !== "undefined" && "wakeLock" in navigator && window.isSecureContext;
+}
+
+function _wakeLockListen() {
+  if (_wakeLockListening || typeof document === "undefined") return;
+  _wakeLockListening = true;
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && _wakeLockWanted) _wakeLockRequest();
+  });
+}
+
+async function _wakeLockRequest() {
+  _wakeLockListen();
+  _wakeLockWanted = true;
+  if (!_wakeLockSupported() || _wakeLock) return;
+  try {
+    _wakeLock = await navigator.wakeLock.request("screen");
+    _wakeLock.addEventListener("release", () => { _wakeLock = null; });
+  } catch (e) {}
+}
+
+function _wakeLockRelease() {
+  _wakeLockWanted = false;
+  if (!_wakeLock) return;
+  const lock = _wakeLock;
+  _wakeLock = null;
+  try { lock.release(); } catch (e) {}
+}
+
+function _wakeLockSet(active) {
+  if (active) _wakeLockRequest();
+  else _wakeLockRelease();
+}
+
 function _droneEnsure() {
   if (_drone) return _drone;
   const AC = window.AudioContext || window.webkitAudioContext;
@@ -40,17 +116,21 @@ function _droneEnsure() {
   lp.type = "lowpass"; lp.frequency.value = 1200; lp.Q.value = 0.5;
   const master = ctx.createGain();
   master.gain.value = 0.0001;
-  const breath = ctx.createGain();   // pacer-driven swell (1 = steady, <1 = exhale dip)
+  const breath = ctx.createGain();   // pacer-driven drone profile
   breath.gain.value = 1;
-  breath.connect(master); master.connect(lp); lp.connect(ctx.destination);
-  _drone = { ctx, master, breath, voices: [], lfo: null };
+  const marker = ctx.createGain();
+  marker.gain.value = CHANT_AUDIO.markerGain;
+  breath.connect(master); master.connect(lp); marker.connect(lp); lp.connect(ctx.destination);
+  _drone = { ctx, master, breath, marker, voices: [], markerVoices: [], lfo: null };
   return _drone;
 }
 function _droneClear(a, release) {
   const now = a.ctx.currentTime;
   a.voices.forEach((o) => { try { o.stop(now + release + 0.05); } catch (e) {} });
+  a.markerVoices.forEach((o) => { try { o.stop(now + release + 0.05); } catch (e) {} });
   if (a.lfo) { try { a.lfo.stop(now + release + 0.05); } catch (e) {} a.lfo = null; }
   a.voices = [];
+  a.markerVoices = [];
 }
 function _droneSet(hz) {
   if (hz == null) {
@@ -94,12 +174,104 @@ function _droneSet(hz) {
 /* ── Seed-chant pacer ──
    One uniform, silent cadence for chanting the bīja — the same on every chakra,
    independent of each card's breathing practice (which is named, not paced). The
-   yantra is the metronome: expand to prepare, contract on the chant; when the
-   tone is on, the drone swells with it and dips as you chant. Honors
-   reduced-motion (no scaling; the phase word still changes). Tune CHANT here. */
-const CHANT = [["Inhale", 3], ["Exhale", 5]];
+   yantra is the metronome: expand to prepare, hold, contract on the chant,
+   then hold again; when the tone is on, the drone swells and dips with it. */
+const CHANT_DEFAULTS = { inhale: 4, exhale: 4, pause: 0, reps: 21 };
+const CHANT_LIMITS = { min: 1, pauseMin: 0, max: 12, repsMin: 1, repsMax: 108 };
+const CHANT_STORAGE = "chakraChantSettings";
 const CHANT_CARDS = { root: 1, sacral: 1, solar: 1, heart: 1, throat: 1, thirdeye: 1, crown: 1 };
 const _ease = (p) => 0.5 - 0.5 * Math.cos(Math.PI * Math.min(1, Math.max(0, p)));
+
+function _chantMix(from, to, p) {
+  return from + (to - from) * _ease(p);
+}
+
+function _chantTransition(settings) {
+  const span = Math.min(settings.inhale + settings.pause, settings.exhale + settings.pause);
+  return Math.min(CHANT_AUDIO.transition, Math.max(0.08, span - 0.05));
+}
+
+function _chantDroneLevel(t, settings, total) {
+  const low = CHANT_AUDIO.inhaleGain;
+  const high = CHANT_AUDIO.exhaleGain;
+  const transition = _chantTransition(settings);
+  const pause = settings.pause;
+  const exhaleStart = settings.inhale + pause;
+  const upStart = exhaleStart - Math.min(pause, transition);
+  const upEnd = upStart + transition;
+  const downStart = total - Math.min(pause, transition);
+  const downEnd = downStart + transition;
+
+  if (downEnd > total && t < downEnd - total) {
+    return _chantMix(high, low, (t + total - downStart) / transition);
+  }
+  if (t >= downStart && t < Math.min(downEnd, total)) {
+    return _chantMix(high, low, (t - downStart) / transition);
+  }
+  if (t >= upStart && t < upEnd) {
+    return _chantMix(low, high, (t - upStart) / transition);
+  }
+  if (t >= upEnd && t < downStart) return high;
+  return low;
+}
+
+function _chantMarkerTone(a, freq, gain, when, dur, attack) {
+  const env = a.ctx.createGain();
+  env.gain.setValueAtTime(0.0001, when);
+  env.gain.exponentialRampToValueAtTime(Math.max(0.0001, gain), when + attack);
+  env.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+  env.connect(a.marker);
+  const o = a.ctx.createOscillator();
+  o.type = "sine";
+  o.frequency.setValueAtTime(freq, when);
+  o.connect(env);
+  o.onended = () => { a.markerVoices = a.markerVoices.filter((voice) => voice !== o); };
+  a.markerVoices.push(o);
+  o.start(when);
+  o.stop(when + dur + 0.05);
+}
+
+function _chantMarker(baseHz, kind) {
+  if (!_drone || !baseHz || !_drone.marker) return;
+  const a = _drone;
+  if (a.ctx.state === "suspended") a.ctx.resume();
+  a.marker.gain.value = CHANT_AUDIO.markerGain;
+  const when = a.ctx.currentTime + 0.025;
+  if (kind === "inhale") {
+    _chantMarkerTone(a, baseHz * 2, 0.105, when, 4, 1.8);
+    _chantMarkerTone(a, baseHz * 4, 0.045, when, 4, 1.8);
+  }
+  if (kind === "exhale") {
+    _chantMarkerTone(a, baseHz * 2, 0.13, when, 2.8, 1.1);
+  }
+}
+
+function _clampChantValue(value, fallback, min = CHANT_LIMITS.min, max = CHANT_LIMITS.max) {
+  const n = Number.parseInt(value, 10);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, n));
+}
+
+function _readChantSettings() {
+  if (typeof window === "undefined") return { ...CHANT_DEFAULTS };
+  try {
+    const saved = JSON.parse(window.localStorage.getItem(CHANT_STORAGE) || "{}");
+    return {
+      inhale: _clampChantValue(saved.inhale, CHANT_DEFAULTS.inhale),
+      exhale: _clampChantValue(saved.exhale, CHANT_DEFAULTS.exhale),
+      pause: _clampChantValue(saved.pause, CHANT_DEFAULTS.pause, CHANT_LIMITS.pauseMin),
+      reps: _clampChantValue(saved.reps, CHANT_DEFAULTS.reps, CHANT_LIMITS.repsMin, CHANT_LIMITS.repsMax),
+    };
+  } catch (e) {
+    return { ...CHANT_DEFAULTS };
+  }
+}
+
+function _saveChantSettings(settings) {
+  try {
+    window.localStorage.setItem(CHANT_STORAGE, JSON.stringify(settings));
+  } catch (e) {}
+}
 
 /* ── Mudra reference photos ──
    Each mudra opens a photo of the hand position in a lightbox. No accurate,
@@ -262,10 +434,12 @@ function Caveats({ onClose }) {
         <p style={{ fontSize: 12.5, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(243,236,221,0.5)", margin: "0 0 22px" }}>Honest caveats</p>
         <p><b style={{ fontWeight: 600 }}>Three traditions, on purpose.</b> This sequence deliberately blends Tantric/yogic practice (bīja mantras, chakras), Shaivite devotion (<i>Om Namah Shivaya</i>), and Tibetan Buddhist practice (<i>Om Mani Padme Hum</i>). That syncretism is intentional, not accidental.</p>
         <p><b style={{ fontWeight: 600 }}>Mudra mappings are not canonical.</b> The mudra-to-chakra assignments here vary by lineage and are not fixed in the source texts. The bīja mantras (LAM, VAM, RAM, YAM, HAM, AUM/OM) have firmer textual grounding than the mudra assignments do.</p>
-        <p><b style={{ fontWeight: 600 }}>This is the full-length version.</b> Built for a complete ~62-minute practice <i>outside</i> the sauna. A compressed ~40-minute sauna variant exists separately — this deck is too long for a single sauna session.</p>
+        <p><b style={{ fontWeight: 600 }}>Practice length is adjustable.</b> Following the card instructions as written will produce an approximately 60-minute practice. To shorten or lengthen it, adjust mantra repetition totals or breathing pace. The author prefers 9 iterations of each bīja for a roughly 40-minute sauna session.</p>
+        <p><b style={{ fontWeight: 600 }}>Kapālabhāti is forceful.</b> Treat it as an active abdominal breathing practice, not a gentle breath cue. Skip it, slow it down, or substitute quiet breathing if it creates dizziness, pressure, strain, nausea, or agitation; use qualified guidance if you are pregnant, recently postpartum or post-surgery, or if you have heart, blood-pressure, seizure, hernia, eye-pressure, or significant respiratory concerns.</p>
+        <p><b style={{ fontWeight: 600 }}>Practice responsibility.</b> This deck can hold a sequence, but it cannot read your body. Keep the intensity, timing, and breath choices within what is safe and appropriate for you today.</p>
         <hr style={{ border: 0, borderTop: "1px solid rgba(243,236,221,0.16)", margin: "22px 0" }} />
         <p style={{ fontSize: 14.5, color: "rgba(243,236,221,0.8)" }}><b style={{ fontWeight: 600 }}>Traditional notes.</b> Petal counts: Root 4 · Sacral 6 · Solar Plexus 10 · Heart 12 · Throat 16 · Third Eye 2 · Crown 1000 (shown as “many”). <i>AUM</i> is the three-syllable expansion of <i>OM</i> (A–U–M + silence), used at the Third Eye and Crown.</p>
-        <p style={{ fontSize: 14.5, color: "rgba(243,236,221,0.8)" }}><b style={{ fontWeight: 600 }}>Chakra tones.</b> The optional ♪ drone gives a pitch to chant the bīja against. It uses the common modern mapping of the chakras to the ascending C-major scale (Root C → Crown B) — a practical chant-pitch aid, not a canonical correspondence. Tap ♪ in the top bar to sound the current center’s tone.</p>
+        <p style={{ fontSize: 14.5, color: "rgba(243,236,221,0.8)" }}><b style={{ fontWeight: 600 }}>Chakra tones.</b> The optional ♪ drone gives a pitch to chant the bīja against. It uses the common modern mapping of the chakras to the ascending C-major scale (Root C → Crown B). Options can compare standard A4=440 tuning with a lower A4=432 tuning. Either way, this is a practical chant-pitch aid, not a canonical chakra-frequency correspondence. Tap ♪ in the top bar to sound the current center’s tone.</p>
         <p style={{ fontSize: 13.5, color: "rgba(243,236,221,0.6)" }}>Yantra art: seven public-domain (CC0) chakra yantras from Wikimedia Commons; the Ganeśa is public-domain art from the Open Clip Art Library. Each mudra opens a hand-position photo (“View hand position”); no accurate, freely-licensed photo of these seven mudras exists online, so those slots await your own photos. The closing symbol is an original schematic. See CREDITS.md.</p>
         <button onClick={onClose} style={{ marginTop: 18, padding: "11px 22px", borderRadius: 30, border: "1px solid rgba(243,236,221,0.3)", background: "transparent", color: CREAM, fontSize: 15, letterSpacing: "0.1em", cursor: "pointer" }}>Close</button>
       </div>
@@ -273,47 +447,250 @@ function Caveats({ onClose }) {
   );
 }
 
+function Options({ chantSettings, toneTuning, onChange, onToneChange, onReset, onClose, accent }) {
+  const control = (key, label) => {
+    const isPause = key === "pause";
+    const isReps = key === "reps";
+    const min = isReps ? CHANT_LIMITS.repsMin : isPause ? CHANT_LIMITS.pauseMin : CHANT_LIMITS.min;
+    const max = isReps ? CHANT_LIMITS.repsMax : CHANT_LIMITS.max;
+    const unit = isReps ? "count" : "seconds";
+    return (
+      <div style={{ padding: "14px 0", borderTop: `1px solid ${accent}22` }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 18, marginBottom: 10 }}>
+          <label htmlFor={`chant-${key}`} style={{ fontSize: 12, letterSpacing: "0.18em", textTransform: "uppercase", color: accent }}>{label}</label>
+          <input id={`chant-${key}-number`} type="number" min={min}
+            max={max} step="1"
+            value={chantSettings[key]} onChange={(e) => onChange(key, e.target.value)}
+            aria-label={`${label} ${unit}`}
+            style={{ width: 64, borderRadius: 10, border: `1px solid ${accent}55`, background: "rgba(5,3,8,0.4)",
+                     color: CREAM, padding: "7px 8px", textAlign: "center", font: "16px 'EB Garamond',serif" }} />
+        </div>
+        <input id={`chant-${key}`} type="range" min={min}
+          max={max} step="1"
+          value={chantSettings[key]} onChange={(e) => onChange(key, e.target.value)}
+          aria-label={`${label} ${unit}`}
+          style={{ width: "100%", accentColor: accent }} />
+      </div>
+    );
+  };
+  const toneControl = (
+    <div style={{ padding: "16px 0", borderTop: `1px solid ${accent}22` }}>
+      <div id="tone-tuning-label" style={{ fontSize: 12, letterSpacing: "0.18em", textTransform: "uppercase", color: accent, marginBottom: 10 }}>Tone tuning</div>
+      <div role="group" aria-labelledby="tone-tuning-label" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        {Object.entries(TONE_TUNINGS).map(([key, tuning]) => {
+          const active = toneTuning === key;
+          return (
+            <button key={key} className="nav" type="button" aria-pressed={active}
+              onClick={() => onToneChange(key)}
+              style={{ minHeight: 48, borderRadius: 24, border: `1px solid ${accent}${active ? "" : "55"}`,
+                       background: active ? `${accent}22` : "transparent", color: active ? CREAM : accent,
+                       cursor: "pointer", font: "15px 'EB Garamond',serif", letterSpacing: "0.06em" }}>
+              {tuning.name}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  return (
+    <div role="dialog" aria-modal="true" aria-label="Options" onClick={onClose}
+      style={{ position: "fixed", inset: 0, zIndex: 50, background: "rgba(5,3,8,0.92)", backdropFilter: "blur(3px)",
+               overflowY: "auto", padding: "54px 24px 40px", color: CREAM, fontSize: 16, lineHeight: 1.55 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: 460, margin: "0 auto" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontWeight: 500, fontSize: 26, letterSpacing: "0.02em", margin: "0 0 4px" }}>Options</h2>
+        <p style={{ fontSize: 12.5, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(243,236,221,0.5)", margin: "0 0 22px" }}>Practice settings</p>
+        {control("inhale", "Inhale")}
+        {control("exhale", "Exhale")}
+        {control("pause", "Pause")}
+        {control("reps", "Bīja repetitions")}
+        {toneControl}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 18, flexWrap: "wrap" }}>
+          <button className="nav" onClick={onReset}
+            style={{ padding: "10px 18px", borderRadius: 24, border: `1px solid ${accent}66`,
+                     background: "transparent", color: accent, font: "15px 'EB Garamond',serif",
+                     cursor: "pointer" }}>Reset 4 / 4 / 0 / 21</button>
+          <button className="nav" onClick={onClose}
+            style={{ padding: "10px 22px", borderRadius: 24, border: "1px solid rgba(243,236,221,0.3)",
+                     background: "transparent", color: CREAM, font: "15px 'EB Garamond',serif",
+                     cursor: "pointer" }}>Close</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HomePage({ card, accent, onFlow, onOptions, onInfo }) {
+  const button = (primary) => ({
+    width: "100%", minHeight: 58, borderRadius: 28, border: `1px solid ${accent}${primary ? "" : "66"}`,
+    background: primary ? `${accent}24` : "rgba(5,3,8,0.18)", color: primary ? CREAM : accent,
+    fontFamily: "'EB Garamond',serif", fontSize: primary ? 20 : 17, letterSpacing: "0.08em",
+    textTransform: "uppercase", cursor: "pointer", display: "flex", alignItems: "center",
+    justifyContent: "center", gap: 10, boxShadow: primary ? `0 10px 32px ${accent}16` : "none"
+  });
+
+  return (
+    <div className="card-anim"
+      style={{ flex: 1, minHeight: 0, overflowY: "auto", display: "flex", flexDirection: "column",
+               alignItems: "center", justifyContent: "center", textAlign: "center", padding: "42px 28px 36px" }}>
+      <div style={{ fontSize: 11, letterSpacing: "0.34em", textTransform: "uppercase", color: accent, marginBottom: 14 }}>Practice deck</div>
+      <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontWeight: 500, fontSize: 48, lineHeight: 0.96, margin: "0 0 7px", letterSpacing: "0.01em" }}>Chakra Flow</h1>
+      <div style={{ fontStyle: "italic", fontSize: 18, color: MUTED, marginBottom: 22 }}>{card.sanskrit}</div>
+
+      <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center",
+                    width: "min(54vw,218px)", height: "min(54vw,218px)", margin: "0 0 28px" }}>
+        <div style={{ position: "absolute", inset: 0, borderRadius: "50%",
+                      background: "radial-gradient(circle, rgba(243,236,221,0.17) 0%, rgba(243,236,221,0.05) 46%, transparent 70%)",
+                      boxShadow: `0 0 0 1px ${accent}33, inset 0 0 28px ${accent}20` }} />
+        <div className="sym" style={{ position: "relative", width: "74%", height: "74%", display: "flex",
+                    alignItems: "center", justifyContent: "center", color: accent, filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.45))" }}>
+          <img src={card.art} alt={card.artAlt} draggable="false" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+        </div>
+      </div>
+
+      <div style={{ width: "100%", maxWidth: 360, display: "grid", gap: 12 }}>
+        <button className="nav" onClick={onFlow} aria-label="Open chakra flow" style={button(true)}>
+          <span style={{ fontSize: 18, lineHeight: 1 }}>▷</span> Chakra Flow
+        </button>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <button className="nav" onClick={onOptions} aria-label="Settings" style={button(false)}>
+            <span style={{ fontSize: 21, lineHeight: 1 }}>⚙</span> Settings
+          </button>
+          <button className="nav" onClick={onInfo} aria-label="Info" style={button(false)}>
+            <span style={{ fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic", fontSize: 24, lineHeight: 1 }}>i</span> Info
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ChakraCards({ artBase = DEFAULT_ART }) {
   const CARDS = React.useMemo(() => buildCards(artBase), [artBase]);
+  const [view, setView] = useState("home");
   const [idx, setIdx] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
   const [photoCard, setPhotoCard] = useState(null);
   const [sound, setSound] = useState(false);
+  const [toneTuning, setToneTuning] = useState(_readToneTuning);
   const [chanting, setChanting] = useState(false); // seed-chant pacer on/off
+  const [chantSettings, setChantSettings] = useState(_readChantSettings);
+  const [chantCountdown, setChantCountdown] = useState(null);
+  const chantCountdownRef = useRef(null);
+  const currentPhaseKindRef = useRef("");
   const symRef = useRef(null);
   const phaseRef = useRef(null);
   const touch = useRef(null);
   const c = CARDS[idx];
+  const homeCard = CARDS[0];
+  const ui = view === "home" ? homeCard : c;
 
-  useEffect(() => { _droneSet(sound ? TONES[c.id].hz : null); }, [sound, idx]);
+  useEffect(() => {
+    if (view !== "flow") { _droneSet(null); return; }
+    _droneSet(sound ? _toneHz(c.id, toneTuning) : null);
+  }, [sound, idx, view, toneTuning]);
+  useEffect(() => {
+    _wakeLockSet(view === "flow");
+    return () => _wakeLockRelease();
+  }, [view]);
   useEffect(() => () => _droneSet(null), []);
+
+  const updateChantSetting = useCallback((key, value) => {
+    setChantSettings((prev) => {
+      const isReps = key === "reps";
+      const min = isReps ? CHANT_LIMITS.repsMin : key === "pause" ? CHANT_LIMITS.pauseMin : CHANT_LIMITS.min;
+      const max = isReps ? CHANT_LIMITS.repsMax : CHANT_LIMITS.max;
+      const next = { ...prev, [key]: _clampChantValue(value, prev[key], min, max) };
+      _saveChantSettings(next);
+      return next;
+    });
+  }, []);
+
+  const resetChantSettings = useCallback(() => {
+    const next = { ...CHANT_DEFAULTS };
+    _saveChantSettings(next);
+    setChantSettings(next);
+  }, []);
+
+  const updateToneTuning = useCallback((tuning) => {
+    if (!TONE_TUNINGS[tuning]) return;
+    _saveToneTuning(tuning);
+    setToneTuning(tuning);
+  }, []);
+
+  const updateChantCountdown = useCallback((next) => {
+    chantCountdownRef.current = next;
+    setChantCountdown(next);
+  }, []);
+
+  const armChantCountdown = useCallback(() => {
+    if (!chanting || !CHANT_CARDS[c.id]) return;
+    updateChantCountdown({
+      remaining: chantSettings.reps,
+      skipCurrentExhale: currentPhaseKindRef.current === "exhale",
+    });
+  }, [chanting, c.id, chantSettings.reps, updateChantCountdown]);
+
+  useEffect(() => {
+    updateChantCountdown(null);
+  }, [idx, updateChantCountdown]);
 
   useEffect(() => {
     const sym = symRef.current;
     if (!chanting || !CHANT_CARDS[c.id]) {
       if (sym) { sym.style.animation = ""; sym.style.transform = ""; }
       if (_drone && _drone.breath) _drone.breath.gain.value = 1;
+      if (chantCountdownRef.current) updateChantCountdown(null);
+      currentPhaseKindRef.current = "";
       return;
     }
-    const cyc = CHANT;
+    const cyc = [
+      ["Inhale", chantSettings.inhale, "inhale"],
+      ["Pause", chantSettings.pause, "high"],
+      ["Exhale", chantSettings.exhale, "exhale"],
+      ["Pause", chantSettings.pause, "low"],
+    ].filter((phase) => phase[1] > 0);
     const total = cyc.reduce((s, p) => s + p[1], 0);
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const seed = (c.mantra || "").trim().split(" ")[0];
     if (sym) sym.style.animation = "none";
-    let raf, start = performance.now(), last = "";
+    const markerHz = _toneHz(c.id, toneTuning);
+    let raf, start = performance.now(), last = "", lastKind = "";
     const frame = (now) => {
       let t = ((now - start) / 1000) % total, acc = 0, phase = cyc[0], prog = 0;
       for (const ph of cyc) { if (t < acc + ph[1]) { phase = ph; prog = (t - acc) / ph[1]; break; } acc += ph[1]; }
-      const name = phase[0], e = _ease(prog);
-      if (sym && !reduceMotion) {
-        const s = name === "Inhale" ? 0.9 + 0.2 * e : name === "Exhale" ? 1.1 - 0.2 * e : 1.1;
+      const name = phase[0], kind = phase[2], e = _ease(prog);
+      currentPhaseKindRef.current = kind;
+      if (sym) {
+        const s = kind === "inhale" ? 0.84 + 0.32 * e
+                : kind === "exhale" ? 1.16 - 0.32 * e
+                : kind === "high" ? 1.16 : 0.84;
         sym.style.transform = "scale(" + s.toFixed(3) + ")";
       }
       if (_drone && _drone.breath) {
-        _drone.breath.gain.value = name === "Inhale" ? 0.3 + 0.7 * e
-                                 : name === "Exhale" ? 1 - 0.7 * e : 1;
+        _drone.breath.gain.value = _chantDroneLevel(t, chantSettings, total);
       }
-      const label = name === "Exhale" && seed ? "Chant · " + seed : name;
+      if (kind !== lastKind) {
+        const previousKind = lastKind;
+        lastKind = kind;
+        if (previousKind === "exhale" && kind !== "exhale" && chantCountdownRef.current) {
+          const active = chantCountdownRef.current;
+          if (active.skipCurrentExhale) {
+            updateChantCountdown({ ...active, skipCurrentExhale: false });
+          } else {
+            const remaining = Math.max(0, active.remaining - 1);
+            if (remaining <= 0) {
+              updateChantCountdown(null);
+              setChanting(false);
+              return;
+            }
+            updateChantCountdown({ ...active, remaining });
+          }
+        }
+        if (sound && (kind === "inhale" || kind === "exhale")) _chantMarker(markerHz, kind);
+      }
+      const countdown = chantCountdownRef.current ? " · " + chantCountdownRef.current.remaining : "";
+      const label = (name === "Exhale" && seed ? "Chant · " + seed : name) + countdown;
       if (phaseRef.current && label !== last) { last = label; phaseRef.current.textContent = label; }
       raf = requestAnimationFrame(frame);
     };
@@ -322,34 +699,45 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
       cancelAnimationFrame(raf);
       if (sym) { sym.style.animation = ""; sym.style.transform = ""; }
       if (_drone && _drone.breath) _drone.breath.gain.value = 1;
+      currentPhaseKindRef.current = "";
     };
-  }, [chanting, idx]);
+  }, [chanting, idx, sound, toneTuning, chantSettings.inhale, chantSettings.exhale, chantSettings.pause, updateChantCountdown]);
 
   const go = useCallback((d) => setIdx((p) => Math.min(CARDS.length - 1, Math.max(0, p + d))), [CARDS.length]);
 
+  const openHome = useCallback(() => {
+    setChanting(false);
+    updateChantCountdown(null);
+    setSound(false);
+    _droneSet(null);
+    setView("home");
+  }, [updateChantCountdown]);
+
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "Escape") { setShowInfo(false); setPhotoCard(null); }
-      else if (e.key === "ArrowRight") go(1);
-      else if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "Escape") { setShowInfo(false); setShowOptions(false); setPhotoCard(null); }
+      else if (view === "flow" && e.key === "ArrowRight") go(1);
+      else if (view === "flow" && e.key === "ArrowLeft") go(-1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [go]);
+  }, [go, view]);
 
   const onStart = (e) => (touch.current = e.touches[0].clientX);
   const onEnd = (e) => {
+    if (view !== "flow") return;
     if (touch.current == null) return;
     const dx = e.changedTouches[0].clientX - touch.current;
     if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1);
     touch.current = null;
   };
+  const canArmCountdown = chanting && CHANT_CARDS[c.id];
 
   return (
     <div onTouchStart={onStart} onTouchEnd={onEnd}
       style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", color: CREAM,
                fontFamily: "'EB Garamond',Georgia,serif",
-               background: `radial-gradient(ellipse 120% 80% at 50% 30%, ${c.field} 0%, ${c.panel} 58%, #060409 100%)`,
+               background: `radial-gradient(ellipse 120% 80% at 50% 30%, ${ui.field} 0%, ${ui.panel} 58%, #060409 100%)`,
                transition: "background 0.7s ease",
                paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" }}>
       <style>{`
@@ -357,36 +745,62 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
         @keyframes fade { from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
         .sym{ animation: floaty 7s ease-in-out infinite; }
         .card-anim{ animation: fade 0.5s ease both; }
-        .nav:focus-visible{ outline:2px solid ${c.accent}; outline-offset:3px; border-radius:6px; }
+        .nav:focus-visible{ outline:2px solid ${ui.accent}; outline-offset:3px; border-radius:6px; }
         @media (prefers-reduced-motion: reduce){ .sym,.card-anim{ animation:none !important; } *{ transition:none !important; } }
       `}</style>
 
       {showInfo && <Caveats onClose={() => setShowInfo(false)} />}
+      {showOptions && <Options
+        chantSettings={chantSettings}
+        toneTuning={toneTuning}
+        onChange={updateChantSetting}
+        onToneChange={updateToneTuning}
+        onReset={resetChantSettings}
+        onClose={() => setShowOptions(false)}
+        accent={ui.accent} />}
       {photoCard && <MudraLightbox card={photoCard} onClose={() => setPhotoCard(null)} />}
 
-      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "16px 18px 6px" }}>
-        <div style={{ display: "flex", gap: 7, flex: 1, flexWrap: "wrap" }}>
+      {view === "home" ? (
+        <HomePage
+          card={homeCard}
+          accent={ui.accent}
+          onFlow={() => setView("flow")}
+          onOptions={() => setShowOptions(true)}
+          onInfo={() => setShowInfo(true)}
+        />
+      ) : (
+      <>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 18px 6px" }}>
+        <button className="nav" aria-label="Home" onClick={openHome}
+          style={{ width: 48, height: 48, flexShrink: 0, borderRadius: "50%", border: `1px solid ${c.accent}66`,
+                   background: "transparent", color: c.accent, fontSize: 25, cursor: "pointer",
+                   fontFamily: "system-ui,-apple-system,sans-serif", lineHeight: 1 }}>⌂</button>
+        <div style={{ display: "flex", gap: 4, flex: 1, flexWrap: "nowrap" }}>
           {CARDS.map((cc, i) => (
             <button key={cc.id} aria-label={cc.name} className="nav" onClick={() => setIdx(i)}
-              style={{ width: i === idx ? 22 : 7, height: 7, borderRadius: 4, border: "none", padding: 0, cursor: "pointer",
+              style={{ width: i === idx ? 18 : 6, height: 6, borderRadius: 3, border: "none", padding: 0, cursor: "pointer",
                        background: i === idx ? c.accent : "rgba(243,236,221,0.25)", transition: "all 0.35s ease" }} />
           ))}
         </div>
         <button className="nav" aria-label={sound ? "Mute chakra tone" : "Play chakra tone"} aria-pressed={sound}
           onClick={() => { try { _droneEnsure(); if (_drone) _drone.ctx.resume(); } catch (e) {} setSound((s) => !s); }}
-          style={{ height: 30, flexShrink: 0, borderRadius: 15, padding: "0 11px", display: "inline-flex",
+          style={{ height: 48, flexShrink: 0, borderRadius: 24, padding: "0 13px", display: "inline-flex",
                    alignItems: "center", gap: 5, border: `1px solid ${c.accent}${sound ? "" : "66"}`,
                    background: sound ? `${c.accent}22` : "transparent", color: c.accent, fontSize: 13,
                    cursor: "pointer", fontFamily: "'EB Garamond',serif" }}>
-          <span style={{ fontSize: 13 }}>♪</span>
-          <span style={{ fontSize: 11, letterSpacing: "0.06em", opacity: sound ? 1 : 0.7 }}>
-            {sound ? TONES[c.id].note : "tone"}
+          <span style={{ fontSize: 26, lineHeight: 1 }}>♪</span>
+          <span style={{ fontSize: 13, letterSpacing: "0.06em", opacity: sound ? 1 : 0.7 }}>
+            {sound ? `${TONES[c.id].note} · ${TONE_TUNINGS[toneTuning].label}` : "tone"}
           </span>
         </button>
+        <button className="nav" aria-label="Options" onClick={() => setShowOptions(true)}
+          style={{ width: 48, height: 48, flexShrink: 0, borderRadius: "50%", border: `1px solid ${c.accent}66`,
+                   background: "transparent", color: c.accent, fontSize: 28, cursor: "pointer",
+                   fontFamily: "system-ui,-apple-system,sans-serif", lineHeight: 1 }}>⚙</button>
         <button className="nav" aria-label="Practice notes" onClick={() => setShowInfo(true)}
-          style={{ width: 30, height: 30, flexShrink: 0, borderRadius: "50%", border: `1px solid ${c.accent}66`,
-                   background: "transparent", color: c.accent, fontSize: 15, cursor: "pointer",
-                   fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic" }}>i</button>
+          style={{ width: 48, height: 48, flexShrink: 0, borderRadius: "50%", border: `1px solid ${c.accent}66`,
+                   background: "transparent", color: c.accent, fontSize: 30, cursor: "pointer",
+                   fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic", lineHeight: 1 }}>i</button>
       </div>
 
       <div className="card-anim" key={c.id}
@@ -403,8 +817,20 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
           <div style={{ position: "absolute", inset: 0, borderRadius: "50%",
                         background: "radial-gradient(circle, rgba(243,236,221,0.17) 0%, rgba(243,236,221,0.05) 46%, transparent 70%)",
                         boxShadow: `0 0 0 1px ${c.ring}33, inset 0 0 26px ${c.ring}22` }} />
-          <div className="sym" ref={symRef} style={{ position: "relative", width: "74%", height: "74%", display: "flex",
-                        alignItems: "center", justifyContent: "center", color: c.accent, filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.45))" }}>
+          <div className="sym" ref={symRef}
+                        role={canArmCountdown ? "button" : undefined}
+                        tabIndex={canArmCountdown ? 0 : undefined}
+                        aria-label={canArmCountdown ? `Start ${chantSettings.reps} bīja countdown` : undefined}
+                        onClick={canArmCountdown ? armChantCountdown : undefined}
+                        onKeyDown={canArmCountdown ? (e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            armChantCountdown();
+                          }
+                        } : undefined}
+                        style={{ position: "relative", width: "74%", height: "74%", display: "flex",
+                        alignItems: "center", justifyContent: "center", color: c.accent, filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.45))",
+                        cursor: canArmCountdown ? "pointer" : "default" }}>
             {c.descent ? <DescentGlyph /> : <img src={c.art} alt={c.artAlt} draggable="false" style={{ width: "100%", height: "100%", objectFit: "contain" }} />}
           </div>
         </div>
@@ -421,7 +847,7 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
           <div style={{ padding: "14px 0 12px" }}>
             <div style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: c.accent, marginBottom: 6 }}>Mantra</div>
             <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 25, lineHeight: 1.2, color: CREAM }}>
-              {c.mantra} <span style={{ color: c.accent, fontSize: 18 }}>{c.mantraCount}</span>
+              {c.mantra} <span style={{ color: c.accent, fontSize: 18 }}>{CHANT_CARDS[c.id] ? `×${chantSettings.reps}` : c.mantraCount}</span>
             </div>
             {c.mantra2 && (
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic", fontSize: 19, color: CREAM, opacity: 0.9, marginTop: 5 }}>
@@ -429,7 +855,12 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
               </div>
             )}
             {CHANT_CARDS[c.id] && (
-              <button className="nav" onClick={() => setChanting((v) => !v)}
+              <button className="nav" onClick={() => {
+                setChanting((v) => {
+                  if (v) updateChantCountdown(null);
+                  return !v;
+                });
+              }}
                 aria-pressed={chanting} aria-label={chanting ? "Stop chant pacer" : "Start chant pacer"}
                 style={{ marginTop: 12, display: "inline-flex", alignItems: "center", gap: 7,
                          padding: "5px 15px", borderRadius: 22, cursor: "pointer",
@@ -467,6 +898,8 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
         <div style={{ fontSize: 11, letterSpacing: "0.26em", color: MUTED }}>{c.id === "close" ? "OM SHANTI" : "SWIPE"} · {idx + 1}/{CARDS.length}</div>
         <button className="nav" onClick={() => go(1)} disabled={idx === CARDS.length - 1} aria-label="Next" style={arrow(idx === CARDS.length - 1, c.accent)}>›</button>
       </div>
+      </>
+      )}
     </div>
   );
 }

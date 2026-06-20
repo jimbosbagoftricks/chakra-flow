@@ -7,40 +7,68 @@ practice reference, built for a phone.
 ## Current direction
 
 This started as a private meditation aid, but the shape is now closer to a small offline-first
-practice app: one source version for iteration, one standalone phone file for actual use, and a
-clear asset/license trail. The next product surface under discussion is an **Options** tab for
-practice-level settings such as chant pacing, yantra motion, and audio swell depth.
+practice app: one hosted/installable PWA for beta use, one standalone phone file as a fallback,
+adjustable chant pacing, and a clear asset/license trail. Future options may add motion and audio
+controls.
 
 The app should stay honest about its boundaries: it can pace and present a personal practice, link
 to technique references, and document provenance; it should not present itself as medical advice,
 lineage authority, or a substitute for a qualified pranayama teacher.
 
-## On your phone — use the standalone file (recommended)
+## On your phone — install the PWA beta
+
+The beta path is the hosted **`index.html`** app served over HTTPS, such as GitHub Pages once the
+remote is created. Android Chrome can install that page to the home screen, use the app icon in
+`assets/icons/`, cache the app shell for offline use, and hold the screen awake while Chakra Flow
+is open.
+
+When a newly published service worker is ready, the app shows an **Update available** prompt. Tap
+**Update** to activate the new cached version and reload the app; tap **Later** to keep practicing
+on the current version.
+
+For each beta publish, bump `CACHE_NAME` in `service-worker.js`. That makes the browser install a
+new waiting service worker and show the update prompt. If only `index.html` changes and the service
+worker file does not, the browser may not present the prompted update flow.
+
+Local install/update testing must use a real web origin:
+
+```bash
+python3 -m http.server 8080
+# then open http://localhost:8080/index.html
+```
+
+`file://` still runs, but it cannot support service-worker updates, installability, or wake lock.
+
+## Standalone file fallback
 
 **`chakra-deck.html`** is a single, fully self-contained file (~3.5 MB): React, the
 pre-compiled component, all artwork, the mudra photos, **and the fonts** are embedded, so it
-needs **zero network** — ideal for offline use (e.g. a sauna). Transfer it to the phone (PairDrop / Google
-Drive / email), open it in **Chrome**, then **⋮ → Add to Home screen** for a full-screen app
-icon. Rebuild it with `node .build/build.cjs` after any source change (see below).
+needs **zero network** — ideal when hosting/installing is not available. Transfer it to the phone
+(PairDrop / Google Drive / email) and open it in **Chrome**. Rebuild it with
+`node .build/build.cjs` after any source change (see below).
 
 ## Run from source (no build step)
 
-Open **`index.html`** in a browser. Unlike the standalone, this loads React from a CDN (first
-open needs internet) and reads the artwork from the local `assets/` folder beside it.
+Open **`index.html`** in a browser. Unlike the standalone, this reads runtime libraries, fonts, and
+artwork from local project folders beside it.
 
 Keep the folder structure intact:
 
 ```
 Chakras/
 ├── chakra-deck.html      ← standalone, offline (for the phone)
-├── index.html            ← runs from source (CDN + local assets)
+├── index.html            ← installable PWA source app
 ├── chakra-cards.jsx      ← same component as an importable ES module
+├── manifest.webmanifest
+├── service-worker.js
 ├── CREDITS.md
 ├── README.md
 ├── TASKS.md              ← working backlog for this project
 ├── dashboard.html         ← optional local task dashboard
+├── vendor/               ← local React/Babel/font runtime for the PWA source app
 ├── .build/               ← bundle pipeline (cached libs, inlined fonts)
 └── assets/
+    ├── icons/            ← PWA launcher icons
     ├── chakras/
     │   ├── Chakra1.svg … Chakra7.svg   (CC0 yantras)
     │   └── Ganesha.svg                  (public-domain, recolored)
@@ -65,20 +93,32 @@ import ChakraCards from "./chakra-cards.jsx";
 ```
 
 ## Interaction
+- Opens to a **Home** screen with direct buttons for **Chakra Flow**, **Settings**, and **Info**.
+  The flow has a ⌂ button to return home.
 - **Swipe** left/right, **arrow buttons**, **tappable progress dots**, or **← / →** keys.
 - Background tint cross-fades between cards.
 - **♪ tone** (top-right) plays a soft drone at the current chakra's pitch to chant the bīja
   against; it follows you from card to card and crossfades. Tap again to mute. The chakra→note
-  mapping is the common modern convention (Root C → Crown B, ascending C-major) — a chant-pitch
-  aid, not canonical. Generated live with Web Audio (no audio files).
-- **▷ pace chant** (under the Mantra, on every chakra) is a silent **seed-chant metronome**: one
-  uniform cadence (inhale 3 / chant on the 5-count exhale), the same on every chakra. The yantra
-  is the metronome — it expands to prepare and contracts on the chant, with a quiet "CHANT · LAM"
-  word on the out-breath. When the ♪ tone is on, the drone **swells and dips with it** (the
-  eyes-closed audio cue). No beeps. Honors `prefers-reduced-motion` (the phase word still changes;
-  no scaling). The seed chant is paced *independently* of each card's breathing practice
-  (Kapālabhāti, Nāḍī Śodhana, etc.), which is named but not paced.
+  mapping is the common modern convention (Root C → Crown B, ascending C-major). The ⚙ options
+  panel can compare standard A4=440 tuning with a lower A4=432 tuning. This is a chant-pitch aid,
+  not canonical. Generated live with Web Audio (no audio files).
+- **▷ pace chant** (under the Mantra, on every chakra) is a silent **seed-chant metronome**. The
+  default cadence is inhale 4 / chant on the 4-count exhale / no pause, and the ⚙ options panel
+  lets you set global inhale, exhale, and pause seconds for all chakra mantra chants. The same
+  pause duration is used after inhale and after exhale.
+  The yantra is the metronome — it expands to prepare, holds large after inhale, contracts on the
+  chant, and holds small after exhale, with a quiet "CHANT · LAM" word on the out-breath. When
+  the ♪ tone is on, the
+  drone **swells and dips with it** (the eyes-closed audio cue). No beeps. The functional chant
+  scale cue stays active even when reduced-motion disables ambient animation. The seed chant is
+  paced *independently* of each card's breathing practice (Kapālabhāti, Nāḍī Śodhana, etc.), which
+  is named but not paced.
 - **⛶ View hand position** (under the Mudra) opens a photo of the hand position in a lightbox.
+- **⚙ Options** adjusts the global mantra-chant inhale, exhale, pause timing, bīja repetitions,
+  and tone tuning.
+  Settings are saved on the device.
+- The hosted PWA keeps the screen awake while **Chakra Flow** is open when the browser supports
+  Wake Lock. This requires HTTPS or localhost; `file://` cannot do it.
 - The **ⓘ** button (top-right) opens the practice notes / honest caveats.
 - Respects `prefers-reduced-motion` (disables the float, fade, and tint transition).
 
@@ -151,5 +191,12 @@ data ships. To swap or add a photo, edit the `MUDRA_PHOTOS` map in both `index.h
   Shaivite (*Om Namah Shivaya*), and Tibetan Buddhist (*Om Mani Padme Hum*). Intentional.
 - Mudra-to-chakra mappings are **not** canonically fixed; they vary by lineage. The bīja
   mantras have firmer textual grounding than the mudra assignments.
-- This is the **full ~62-min version, for use *outside* the sauna**. A compressed ~40-min
-  sauna variant exists separately.
+- Following the card instructions as written produces an approximately 60-minute practice.
+  To shorten or lengthen it, adjust mantra repetition totals or breathing pace. The author
+  prefers 9 iterations of each bīja for a roughly 40-minute sauna session.
+- Kapālabhāti is forceful abdominal breathing. Skip it, slow it down, or substitute quiet
+  breathing if it creates dizziness, pressure, strain, nausea, or agitation; use qualified
+  guidance if you are pregnant, recently postpartum or post-surgery, or if you have heart,
+  blood-pressure, seizure, hernia, eye-pressure, or significant respiratory concerns.
+- This deck can hold a sequence, but it cannot read your body. Keep the intensity, timing,
+  and breath choices within what is safe and appropriate for you today.

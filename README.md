@@ -22,6 +22,10 @@ remote is created. Android Chrome can install that page to the home screen, use 
 `assets/icons/`, cache the app shell for offline use, and hold the screen awake while Chakra Flow
 is open.
 
+The GitHub Pages workflow publishes the PWA at:
+
+<https://jimbosbagoftricks.github.io/chakra-flow/>
+
 When a newly published service worker is ready, the app shows an **Update available** prompt. Tap
 **Update** to activate the new cached version and reload the app; tap **Later** to keep practicing
 on the current version.

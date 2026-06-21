@@ -20,8 +20,9 @@
   - Consider phase-change pulses, inhale/exhale timbre differences, stronger gain shaping, or optional spoken/tonal cues.
   - Keep it low-distraction and usable mostly eyes closed.
 - [ ] **Rebuild and verify the standalone file after source changes** - run `node .build/build.cjs` and check `chakra-deck.html` still works offline.
-- [ ] **Publish and test the PWA beta** - after a GitHub remote exists, enable GitHub Pages and verify Android install, wake lock, offline launch, and prompted updates.
+- [ ] **Publish and test the PWA beta** - verify GitHub Pages deploy, Android install, wake lock, offline launch, and prompted updates.
   - Local `file://` cannot verify service-worker behavior; use localhost or HTTPS.
+  - Expected public URL: `https://jimbosbagoftricks.github.io/chakra-flow/`.
 
 ## Waiting On
 

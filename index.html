@@ -565,65 +565,50 @@ function BreathHelp({ card, onClose }) {
   );
 }
 
-function Caveats({ onClose }) {
+function AboutSection({ title, children }) {
   return (
-    <div role="dialog" aria-modal="true" aria-label="Practice notes"
+    <section style={{ margin:"24px 0 0" }}>
+      <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontWeight:500, fontSize:22,
+                   letterSpacing:"0.02em", margin:"0 0 10px", color:CREAM }}>{title}</h3>
+      <div style={{ fontSize:15.5, lineHeight:1.58, color:"rgba(243,236,221,0.86)" }}>{children}</div>
+    </section>
+  );
+}
+
+function About({ onClose }) {
+  return (
+    <div role="dialog" aria-modal="true" aria-label="About Chakra Flow"
       onClick={onClose}
       style={{ position:"fixed", inset:0, zIndex:50, background:"rgba(5,3,8,0.92)",
                backdropFilter:"blur(3px)", overflowY:"auto", padding:"54px 24px 40px",
                color:CREAM, fontFamily:"'EB Garamond',Georgia,serif", fontSize:16, lineHeight:1.62 }}>
       <div onClick={(e)=>e.stopPropagation()} style={{ maxWidth:560, margin:"0 auto" }}>
         <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontWeight:500, fontSize:26,
-                     letterSpacing:"0.02em", margin:"0 0 4px" }}>On this practice</h2>
+                     letterSpacing:"0.02em", margin:"0 0 4px" }}>About Chakra Flow</h2>
         <p style={{ fontSize:12.5, letterSpacing:"0.18em", textTransform:"uppercase",
-                    color:"rgba(243,236,221,0.5)", margin:"0 0 22px" }}>Honest caveats</p>
+                    color:"rgba(243,236,221,0.5)", margin:"0 0 18px" }}>Use · practice · credits</p>
 
-        <p><b style={{fontWeight:600}}>Three traditions, on purpose.</b> This sequence deliberately
-        blends Tantric/yogic practice (bīja mantras, chakras), Shaivite devotion
-        (<i>Om Namah Shivaya</i>), and Tibetan Buddhist practice (<i>Om Mani Padme Hum</i>).
-        That syncretism is intentional, not accidental.</p>
+        <AboutSection title="How To Use The App">
+          <p>Open <b style={{fontWeight:600}}>Chakra Flow</b>, then move through the cards by swiping, using the arrow buttons, or tapping the progress dots.</p>
+          <p>Tap <b style={{fontWeight:600}}>♪</b> for the current chakra drone. Use <b style={{fontWeight:600}}>Settings</b> to adjust tone tuning, bīja repetitions, chant pacing, and pause length.</p>
+          <p>Tap <b style={{fontWeight:600}}>pace chant</b> to start the bīja metronome. The yantra expands for inhale and contracts during the chant. While pacing is active, tap the yantra to begin a countdown set.</p>
+          <p>Use <b style={{fontWeight:600}}>?</b> beside breath rows for technique references, and <b style={{fontWeight:600}}>View hand position</b> for mudra photos.</p>
+        </AboutSection>
 
-        <p><b style={{fontWeight:600}}>Mudra mappings are not canonical.</b> The mudra-to-chakra
-        assignments here vary by lineage and are not fixed in the source texts. The bīja
-        mantras (LAM, VAM, RAM, YAM, HAM, AUM/OM) have firmer textual grounding than the
-        mudra assignments do.</p>
+        <AboutSection title="About This Practice">
+          <p><b style={{fontWeight:600}}>Three traditions, on purpose.</b> This sequence deliberately blends Tantric/yogic practice (bīja mantras, chakras), Shaivite devotion (<i>Om Namah Shivaya</i>), and Tibetan Buddhist practice (<i>Om Mani Padme Hum</i>).</p>
+          <p><b style={{fontWeight:600}}>Mudra mappings are not canonical.</b> The mudra-to-chakra assignments vary by lineage. The bīja mantras (LAM, VAM, RAM, YAM, HAM, AUM/OM) have firmer textual grounding than the mudra assignments do.</p>
+          <p><b style={{fontWeight:600}}>Practice length is adjustable.</b> The default 9 repetitions of each bīja suit a shorter sauna-length practice. To lengthen the sequence toward an approximately 60-minute practice, raise mantra repetition totals or slow the breathing pace.</p>
+          <p><b style={{fontWeight:600}}>Kapālabhāti is forceful.</b> Treat it as active abdominal breathing, not a gentle breath cue. Skip it, slow it down, or substitute quiet breathing if it creates dizziness, pressure, strain, nausea, or agitation; use qualified guidance if you are pregnant, recently postpartum or post-surgery, or if you have heart, blood-pressure, seizure, hernia, eye-pressure, or significant respiratory concerns.</p>
+          <p><b style={{fontWeight:600}}>Chakra tones are practical, not canonical.</b> The optional drone uses the common modern ascending C-major mapping (Root C → Crown B), with 432 and 440 tuning options.</p>
+          <p><b style={{fontWeight:600}}>Practice responsibility.</b> This deck can hold a sequence, but it cannot read your body. Keep the intensity, timing, and breath choices within what is safe and appropriate for you today.</p>
+        </AboutSection>
 
-        <p><b style={{fontWeight:600}}>Practice length is adjustable.</b> The default 9
-        repetitions of each bīja suit a shorter sauna-length practice. To lengthen the sequence
-        toward an approximately 60-minute practice, raise mantra repetition totals or slow the
-        breathing pace.</p>
-
-        <p><b style={{fontWeight:600}}>Kapālabhāti is forceful.</b> Treat it as an active abdominal
-        breathing practice, not a gentle breath cue. Skip it, slow it down, or substitute quiet
-        breathing if it creates dizziness, pressure, strain, nausea, or agitation; use qualified
-        guidance if you are pregnant, recently postpartum or post-surgery, or if you have heart,
-        blood-pressure, seizure, hernia, eye-pressure, or significant respiratory concerns.</p>
-
-        <p><b style={{fontWeight:600}}>Practice responsibility.</b> This deck can hold a sequence,
-        but it cannot read your body. Keep the intensity, timing, and breath choices within what
-        is safe and appropriate for you today.</p>
-
-        <hr style={{ border:0, borderTop:"1px solid rgba(243,236,221,0.16)", margin:"22px 0" }} />
-
-        <p style={{ fontSize:14.5, color:"rgba(243,236,221,0.8)" }}>
-        <b style={{fontWeight:600}}>Traditional notes.</b> Petal counts: Root 4 · Sacral 6 ·
-        Solar Plexus 10 · Heart 12 · Throat 16 · Third Eye 2 · Crown 1000 (shown as “many”).
-        <i> AUM</i> is the three-syllable expansion of <i>OM</i> (A–U–M + silence), used at the
-        Third Eye and Crown.</p>
-
-        <p style={{ fontSize:14.5, color:"rgba(243,236,221,0.8)" }}>
-        <b style={{fontWeight:600}}>Chakra tones.</b> The optional ♪ drone gives a pitch to chant
-        the bīja against. It uses the common modern mapping of the chakras to the ascending
-        C-major scale (Root C → Crown B). Options can compare standard A4=440 tuning with a
-        lower A4=432 tuning. Either way, this is a practical chant-pitch aid, not a canonical
-        chakra-frequency correspondence. Tap ♪ in the top bar to sound the current center’s tone.</p>
-
-        <p style={{ fontSize:13.5, color:"rgba(243,236,221,0.6)" }}>
-        Yantra art: seven public-domain (CC0) chakra yantras from Wikimedia Commons; the
-        Ganeśa is public-domain art from the Open Clip Art Library. Each mudra opens a
-        hand-position photo (“View hand position”); no accurate, freely-licensed photo of these
-        seven mudras exists online, so those slots await your own photos. The closing symbol is
-        an original schematic. See CREDITS.md.</p>
+        <AboutSection title="Media Credits">
+          <p>The seven chakra yantras are public-domain / CC0 images from Wikimedia Commons. The Ganeśa opening image is public-domain / CC0 art from the Open Clip Art Library via freesvg.org.</p>
+          <p>The mudra photos are the author's own hand-position photos, released with the project as CC0 / public domain. EXIF/GPS metadata has been stripped from the bundled images.</p>
+          <p>The app icon uses the Root / Mūlādhāra yantra, and the closing descent symbol is an original schematic. Full provenance is logged in <i>CREDITS.md</i>.</p>
+        </AboutSection>
 
         <button onClick={onClose} style={{ marginTop:18, padding:"11px 22px", borderRadius:30,
           border:"1px solid rgba(243,236,221,0.3)", background:"transparent", color:CREAM,
@@ -757,9 +742,9 @@ function HomePage({ card, accent, onFlow, onOptions, onInfo }) {
           <button className="nav" onClick={onOptions} aria-label="Settings" style={button(false)}>
             <span style={{ fontSize:21, lineHeight:1 }}>⚙</span> Settings
           </button>
-          <button className="nav" onClick={onInfo} aria-label="Info" style={button(false)}>
+          <button className="nav" onClick={onInfo} aria-label="About" style={button(false)}>
             <span style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic",
-                           fontSize:24, lineHeight:1 }}>i</span> Info
+                           fontSize:24, lineHeight:1 }}>i</span> About
           </button>
         </div>
       </div>
@@ -959,7 +944,7 @@ function Deck() {
         }
       `}</style>
 
-      {showInfo && <Caveats onClose={() => setShowInfo(false)} />}
+      {showInfo && <About onClose={() => setShowInfo(false)} />}
       {showOptions && <Options
         chantSettings={chantSettings}
         toneTuning={toneTuning}
@@ -1017,7 +1002,7 @@ function Deck() {
                    fontSize:28, cursor:"pointer", fontFamily:"system-ui,-apple-system,sans-serif", lineHeight:1 }}>
           ⚙
         </button>
-        <button className="nav" aria-label="Practice notes" onClick={() => setShowInfo(true)}
+        <button className="nav" aria-label="About" onClick={() => setShowInfo(true)}
           style={{ width:48, height:48, flexShrink:0, borderRadius:"50%",
                    border:`1px solid ${c.accent}66`, background:"transparent", color:c.accent,
                    fontSize:30, cursor:"pointer", fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic", lineHeight:1 }}>

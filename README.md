@@ -103,7 +103,7 @@ import ChakraCards from "./chakra-cards.jsx";
 ```
 
 ## Interaction
-- Opens to a **Home** screen with direct buttons for **Chakra Flow**, **Settings**, and **Info**.
+- Opens to a **Home** screen with direct buttons for **Chakra Flow**, **Settings**, and **About**.
   The flow has a ⌂ button to return home.
 - **Swipe** left/right, **arrow buttons**, **tappable progress dots**, or **← / →** keys.
 - Background tint cross-fades between cards.
@@ -129,7 +129,7 @@ import ChakraCards from "./chakra-cards.jsx";
   Settings are saved on the device.
 - The hosted PWA keeps the screen awake while **Chakra Flow** is open when the browser supports
   Wake Lock. This requires HTTPS or localhost; `file://` cannot do it.
-- The **ⓘ** button (top-right) opens the practice notes / honest caveats.
+- The **ⓘ** button (top-right) opens **About**, with sections for app use, practice notes, and media credits.
 - Respects `prefers-reduced-motion` (disables the float, fade, and tint transition).
 
 ## Practice references
@@ -197,7 +197,7 @@ data ships. To swap or add a photo, edit the `MUDRA_PHOTOS` map in both `index.h
 > Note: Wikimedia's `File:Ganesha.svg` is mislabeled — it's actually a chemistry diagram, not
 > the deity — so a verified CC0 Ganesha from Open Clip Art was used instead. See CREDITS.md.
 
-## Honest caveats (also in-app under ⓘ)
+## About notes (also in-app under ⓘ)
 - The practice deliberately blends three traditions — Tantric/yogic (bīja mantras, chakras),
   Shaivite (*Om Namah Shivaya*), and Tibetan Buddhist (*Om Mani Padme Hum*). Intentional.
 - Mudra-to-chakra mappings are **not** canonically fixed; they vary by lineage. The bīja

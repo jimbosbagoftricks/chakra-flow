@@ -1393,13 +1393,38 @@ function BreathHelp({
     }
   }, "Close")));
 }
-function Caveats({
+function AboutSection({
+  title,
+  children
+}) {
+  return /*#__PURE__*/React.createElement("section", {
+    style: {
+      margin: "24px 0 0"
+    }
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontFamily: "'Cormorant Garamond',serif",
+      fontWeight: 500,
+      fontSize: 22,
+      letterSpacing: "0.02em",
+      margin: "0 0 10px",
+      color: CREAM
+    }
+  }, title), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 15.5,
+      lineHeight: 1.58,
+      color: "rgba(243,236,221,0.86)"
+    }
+  }, children));
+}
+function About({
   onClose
 }) {
   return /*#__PURE__*/React.createElement("div", {
     role: "dialog",
     "aria-modal": "true",
-    "aria-label": "Practice notes",
+    "aria-label": "About Chakra Flow",
     onClick: onClose,
     style: {
       position: "fixed",
@@ -1428,23 +1453,51 @@ function Caveats({
       letterSpacing: "0.02em",
       margin: "0 0 4px"
     }
-  }, "On this practice"), /*#__PURE__*/React.createElement("p", {
+  }, "About Chakra Flow"), /*#__PURE__*/React.createElement("p", {
     style: {
       fontSize: 12.5,
       letterSpacing: "0.18em",
       textTransform: "uppercase",
       color: "rgba(243,236,221,0.5)",
-      margin: "0 0 22px"
+      margin: "0 0 18px"
     }
-  }, "Honest caveats"), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("b", {
+  }, "Use \xB7 practice \xB7 credits"), /*#__PURE__*/React.createElement(AboutSection, {
+    title: "How To Use The App"
+  }, /*#__PURE__*/React.createElement("p", null, "Open ", /*#__PURE__*/React.createElement("b", {
     style: {
       fontWeight: 600
     }
-  }, "Three traditions, on purpose."), " This sequence deliberately blends Tantric/yogic practice (b\u012Bja mantras, chakras), Shaivite devotion (", /*#__PURE__*/React.createElement("i", null, "Om Namah Shivaya"), "), and Tibetan Buddhist practice (", /*#__PURE__*/React.createElement("i", null, "Om Mani Padme Hum"), "). That syncretism is intentional, not accidental."), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("b", {
+  }, "Chakra Flow"), ", then move through the cards by swiping, using the arrow buttons, or tapping the progress dots."), /*#__PURE__*/React.createElement("p", null, "Tap ", /*#__PURE__*/React.createElement("b", {
     style: {
       fontWeight: 600
     }
-  }, "Mudra mappings are not canonical."), " The mudra-to-chakra assignments here vary by lineage and are not fixed in the source texts. The b\u012Bja mantras (LAM, VAM, RAM, YAM, HAM, AUM/OM) have firmer textual grounding than the mudra assignments do."), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("b", {
+  }, "\u266A"), " for the current chakra drone. Use ", /*#__PURE__*/React.createElement("b", {
+    style: {
+      fontWeight: 600
+    }
+  }, "Settings"), " to adjust tone tuning, b\u012Bja repetitions, chant pacing, and pause length."), /*#__PURE__*/React.createElement("p", null, "Tap ", /*#__PURE__*/React.createElement("b", {
+    style: {
+      fontWeight: 600
+    }
+  }, "pace chant"), " to start the b\u012Bja metronome. The yantra expands for inhale and contracts during the chant. While pacing is active, tap the yantra to begin a countdown set."), /*#__PURE__*/React.createElement("p", null, "Use ", /*#__PURE__*/React.createElement("b", {
+    style: {
+      fontWeight: 600
+    }
+  }, "?"), " beside breath rows for technique references, and ", /*#__PURE__*/React.createElement("b", {
+    style: {
+      fontWeight: 600
+    }
+  }, "View hand position"), " for mudra photos.")), /*#__PURE__*/React.createElement(AboutSection, {
+    title: "About This Practice"
+  }, /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("b", {
+    style: {
+      fontWeight: 600
+    }
+  }, "Three traditions, on purpose."), " This sequence deliberately blends Tantric/yogic practice (b\u012Bja mantras, chakras), Shaivite devotion (", /*#__PURE__*/React.createElement("i", null, "Om Namah Shivaya"), "), and Tibetan Buddhist practice (", /*#__PURE__*/React.createElement("i", null, "Om Mani Padme Hum"), ")."), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("b", {
+    style: {
+      fontWeight: 600
+    }
+  }, "Mudra mappings are not canonical."), " The mudra-to-chakra assignments vary by lineage. The b\u012Bja mantras (LAM, VAM, RAM, YAM, HAM, AUM/OM) have firmer textual grounding than the mudra assignments do."), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("b", {
     style: {
       fontWeight: 600
     }
@@ -1452,40 +1505,17 @@ function Caveats({
     style: {
       fontWeight: 600
     }
-  }, "Kap\u0101labh\u0101ti is forceful."), " Treat it as an active abdominal breathing practice, not a gentle breath cue. Skip it, slow it down, or substitute quiet breathing if it creates dizziness, pressure, strain, nausea, or agitation; use qualified guidance if you are pregnant, recently postpartum or post-surgery, or if you have heart, blood-pressure, seizure, hernia, eye-pressure, or significant respiratory concerns."), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("b", {
+  }, "Kap\u0101labh\u0101ti is forceful."), " Treat it as active abdominal breathing, not a gentle breath cue. Skip it, slow it down, or substitute quiet breathing if it creates dizziness, pressure, strain, nausea, or agitation; use qualified guidance if you are pregnant, recently postpartum or post-surgery, or if you have heart, blood-pressure, seizure, hernia, eye-pressure, or significant respiratory concerns."), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("b", {
     style: {
       fontWeight: 600
     }
-  }, "Practice responsibility."), " This deck can hold a sequence, but it cannot read your body. Keep the intensity, timing, and breath choices within what is safe and appropriate for you today."), /*#__PURE__*/React.createElement("hr", {
-    style: {
-      border: 0,
-      borderTop: "1px solid rgba(243,236,221,0.16)",
-      margin: "22px 0"
-    }
-  }), /*#__PURE__*/React.createElement("p", {
-    style: {
-      fontSize: 14.5,
-      color: "rgba(243,236,221,0.8)"
-    }
-  }, /*#__PURE__*/React.createElement("b", {
+  }, "Chakra tones are practical, not canonical."), " The optional drone uses the common modern ascending C-major mapping (Root C \u2192 Crown B), with 432 and 440 tuning options."), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("b", {
     style: {
       fontWeight: 600
     }
-  }, "Traditional notes."), " Petal counts: Root 4 \xB7 Sacral 6 \xB7 Solar Plexus 10 \xB7 Heart 12 \xB7 Throat 16 \xB7 Third Eye 2 \xB7 Crown 1000 (shown as \u201Cmany\u201D).", /*#__PURE__*/React.createElement("i", null, " AUM"), " is the three-syllable expansion of ", /*#__PURE__*/React.createElement("i", null, "OM"), " (A\u2013U\u2013M + silence), used at the Third Eye and Crown."), /*#__PURE__*/React.createElement("p", {
-    style: {
-      fontSize: 14.5,
-      color: "rgba(243,236,221,0.8)"
-    }
-  }, /*#__PURE__*/React.createElement("b", {
-    style: {
-      fontWeight: 600
-    }
-  }, "Chakra tones."), " The optional \u266A drone gives a pitch to chant the b\u012Bja against. It uses the common modern mapping of the chakras to the ascending C-major scale (Root C \u2192 Crown B). Options can compare standard A4=440 tuning with a lower A4=432 tuning. Either way, this is a practical chant-pitch aid, not a canonical chakra-frequency correspondence. Tap \u266A in the top bar to sound the current center\u2019s tone."), /*#__PURE__*/React.createElement("p", {
-    style: {
-      fontSize: 13.5,
-      color: "rgba(243,236,221,0.6)"
-    }
-  }, "Yantra art: seven public-domain (CC0) chakra yantras from Wikimedia Commons; the Gane\u015Ba is public-domain art from the Open Clip Art Library. Each mudra opens a hand-position photo (\u201CView hand position\u201D); no accurate, freely-licensed photo of these seven mudras exists online, so those slots await your own photos. The closing symbol is an original schematic. See CREDITS.md."), /*#__PURE__*/React.createElement("button", {
+  }, "Practice responsibility."), " This deck can hold a sequence, but it cannot read your body. Keep the intensity, timing, and breath choices within what is safe and appropriate for you today.")), /*#__PURE__*/React.createElement(AboutSection, {
+    title: "Media Credits"
+  }, /*#__PURE__*/React.createElement("p", null, "The seven chakra yantras are public-domain / CC0 images from Wikimedia Commons. The Gane\u015Ba opening image is public-domain / CC0 art from the Open Clip Art Library via freesvg.org."), /*#__PURE__*/React.createElement("p", null, "The mudra photos are the author's own hand-position photos, released with the project as CC0 / public domain. EXIF/GPS metadata has been stripped from the bundled images."), /*#__PURE__*/React.createElement("p", null, "The app icon uses the Root / M\u016Bl\u0101dh\u0101ra yantra, and the closing descent symbol is an original schematic. Full provenance is logged in ", /*#__PURE__*/React.createElement("i", null, "CREDITS.md"), ".")), /*#__PURE__*/React.createElement("button", {
     onClick: onClose,
     style: {
       marginTop: 18,
@@ -1825,7 +1855,7 @@ function HomePage({
   }, "\u2699"), " Settings"), /*#__PURE__*/React.createElement("button", {
     className: "nav",
     onClick: onInfo,
-    "aria-label": "Info",
+    "aria-label": "About",
     style: button(false)
   }, /*#__PURE__*/React.createElement("span", {
     style: {
@@ -1834,7 +1864,7 @@ function HomePage({
       fontSize: 24,
       lineHeight: 1
     }
-  }, "i"), " Info"))));
+  }, "i"), " About"))));
 }
 
 /* ───────────────────── Deck ───────────────────── */
@@ -2053,7 +2083,7 @@ function Deck() {
           .sym,.card-anim{ animation:none !important; }
           *{ transition:none !important; }
         }
-      `), showInfo && /*#__PURE__*/React.createElement(Caveats, {
+      `), showInfo && /*#__PURE__*/React.createElement(About, {
     onClose: () => setShowInfo(false)
   }), showOptions && /*#__PURE__*/React.createElement(Options, {
     chantSettings: chantSettings,
@@ -2177,7 +2207,7 @@ function Deck() {
     }
   }, "\u2699"), /*#__PURE__*/React.createElement("button", {
     className: "nav",
-    "aria-label": "Practice notes",
+    "aria-label": "About",
     onClick: () => setShowInfo(true),
     style: {
       width: 48,

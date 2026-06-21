@@ -50,8 +50,11 @@
   - User wants the project to be free to reuse and remix without attribution requirements where possible.
   - Implementation still needs license files and README/CREDITS reconciliation.
 - [x] ~~Add home page hub~~ (2026-06-19)
-  - Home provides Chakra Flow, Settings, and Info buttons before entering the deck.
+  - Home provides Chakra Flow, Settings, and About buttons before entering the deck.
   - Flow view includes a Home control and preserves the current card when returning to the flow.
+- [x] ~~Restructure About page~~ (2026-06-21)
+  - About now has sections for app use, practice notes, and media credits.
+  - Kept richer association guidance parked for the future tutorial page.
 - [x] ~~Add 432 tone tuning comparison~~ (2026-06-19)
   - Options can switch the drone between Standard 440 and Soft 432.
   - Tone tuning is saved on-device and framed as preference, not canonical chakra doctrine.

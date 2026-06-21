@@ -42,7 +42,7 @@
   - Mudra photos and `chakra-deck.html` are intentionally tracked; the photos were shot for this purpose.
   - No GitHub remote configured yet.
 - [x] ~~Implement global mantra chant timing options~~ (2026-06-19)
-  - Defaults set to 4-second inhale, 4-second exhale, and 0-second pause.
+  - Defaults set to 4-second inhale, 4-second exhale, 1-second pause, and 9 bīja repetitions.
   - Inhale/exhale/pause controls apply globally to all chakra mantra chants and save on-device.
   - The shared pause setting applies after inhale and after exhale.
   - Card-specific breathing practice text remains unpaced.

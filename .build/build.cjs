@@ -13,8 +13,10 @@ const srcOpenEnd = html.indexOf(">", srcStart) + 1;
 const srcEnd = html.indexOf("</script>", srcOpenEnd);
 let jsx = html.slice(srcOpenEnd, srcEnd);
 
-// 2. Rewrite `${ART}/Foo.svg` template literals to ASSETS["Foo.svg"] lookups.
-jsx = jsx.replace(/`\$\{ART\}\/([\w.]+)`/g, (_m, f) => `ASSETS[${JSON.stringify(f)}]`);
+// 2. Rewrite `${ART}/Foo.svg` and `${MANTRA_ART}/Foo.svg` template literals
+//    to ASSETS["Foo.svg"] lookups.
+jsx = jsx.replace(/`\$\{ART\}\/([\w.-]+)`/g, (_m, f) => `ASSETS[${JSON.stringify(f)}]`);
+jsx = jsx.replace(/`\$\{MANTRA_ART\}\/([\w.-]+)`/g, (_m, f) => `ASSETS[${JSON.stringify(f)}]`);
 
 // 3. Pre-compile JSX → plain JS (classic runtime so it uses the global React).
 let code = Babel.transform(jsx, {
@@ -55,12 +57,15 @@ for (const f of fs.readdirSync(mudraDir).sort()) {
 code = code.replace(/MUDRA_DATA\s*=\s*\{\}/, "MUDRA_DATA = " + JSON.stringify(mudraData));
 const mudraKB = (Buffer.byteLength(JSON.stringify(mudraData)) / 1024).toFixed(0);
 
-// 4. Inline the 8 SVGs as base64 data URIs.
-const files = ["Ganesha.svg", "Chakra1.svg", "Chakra2.svg", "Chakra3.svg",
-               "Chakra4.svg", "Chakra5.svg", "Chakra6.svg", "Chakra7.svg"];
+// 4. Inline the SVGs as base64 data URIs.
 const assets = {};
-for (const f of files) {
+for (const f of ["Ganesha.svg", "Chakra1.svg", "Chakra2.svg", "Chakra3.svg",
+                 "Chakra4.svg", "Chakra5.svg", "Chakra6.svg", "Chakra7.svg"]) {
   const buf = fs.readFileSync(path.join(ROOT, "assets/chakras", f));
+  assets[f] = "data:image/svg+xml;base64," + buf.toString("base64");
+}
+for (const f of ["Shivalinga_symbol.svg", "Om-mani-padme-hum-mantra.svg"]) {
+  const buf = fs.readFileSync(path.join(ROOT, "assets/mantras", f));
   assets[f] = "data:image/svg+xml;base64," + buf.toString("base64");
 }
 const assetsJs = "var ASSETS = " + JSON.stringify(assets) + ";";

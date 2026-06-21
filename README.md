@@ -1,8 +1,8 @@
 # Ascending Chakra Practice — Card Deck
 
-A mobile-first, swipeable deck of 9 full-screen cards for a ~62-minute ascending
-chakra meditation (Ganesha invocation → Root → … → Crown → Descent & close). Personal
-practice reference, built for a phone.
+A mobile-first, swipeable 11-card practice deck for an ascending chakra meditation
+(Ganesha invocation → Root → … → Crown → Descent & close), with separate cards for
+the additional Shiva and Mani mantras. Personal practice reference, built for a phone.
 
 ## Current direction
 
@@ -82,6 +82,7 @@ Chakras/
     ├── chakras/
     │   ├── Chakra1.svg … Chakra7.svg   (CC0 yantras)
     │   └── Ganesha.svg                  (public-domain, recolored)
+    ├── mantras/          ← public-domain additional-mantra symbols
     └── mudras/           ← drop your own hand-position photos here
 ```
 
@@ -98,8 +99,9 @@ cd Chakras && python3 -m http.server 8080
 
 ```jsx
 import ChakraCards from "./chakra-cards.jsx";
-// place assets/chakras/* under your app's public/ dir, or pass a custom base:
-<ChakraCards artBase="/assets/chakras" />
+// place assets/chakras/* and assets/mantras/* under your app's public/ dir,
+// or pass custom bases:
+<ChakraCards artBase="/assets/chakras" mantraArtBase="/assets/mantras" />
 ```
 
 ## Interaction
@@ -113,7 +115,7 @@ import ChakraCards from "./chakra-cards.jsx";
   panel defaults to the lower A4=432 tuning, with standard A4=440 available for comparison.
   This is a chant-pitch aid, not canonical. Generated live with Web Audio (no audio files).
 - **▷ pace chant** (under the Mantra, on every chakra) is a silent **seed-chant metronome**. The
-  default cadence is 9 bīja repetitions, inhale 4 / chant on the 4-count exhale / no pause, and
+  default cadence is 9 bīja repetitions, inhale 4 / chant on the 4-count exhale / 1-second pause, and
   the ⚙ options panel lets you set global repetitions, inhale, exhale, and pause seconds for all
   chakra mantra chants. The same pause duration is used after inhale and after exhale.
   The yantra is the metronome — it expands to prepare, holds large after inhale, contracts on the
@@ -123,6 +125,8 @@ import ChakraCards from "./chakra-cards.jsx";
   scale cue stays active even when reduced-motion disables ambient animation. The seed chant is
   paced *independently* of each card's breathing practice (Kapālabhāti, Nāḍī Śodhana, etc.), which
   is named but not paced.
+  While pacing is active, the adjacent count button starts a bīja countdown set; tapping it again
+  pauses or resumes the countdown.
 - **⛶ View hand position** (under the Mudra) opens a photo of the hand position in a lightbox.
 - **⚙ Options** adjusts the global mantra-chant inhale, exhale, pause timing, bīja repetitions,
   and tone tuning.
@@ -168,7 +172,7 @@ and [Choose a License](https://choosealicense.com/) before publishing.
 Proposed offering map:
 
 - **Code:** likely a permissive software license if the goal is easy reuse and remixing.
-- **Bundled public-domain yantras/Ganeśa:** keep the provenance log in `CREDITS.md`.
+- **Bundled public-domain yantras/Ganeśa/mantra symbols:** keep the provenance log in `CREDITS.md`.
 - **Author hand photos:** decide whether they remain CC0 in the public release or are replaced,
   excluded, or separately licensed.
 - **Practice content:** treat as personal practice notes with caveats, sources, and no medical
@@ -178,8 +182,9 @@ Proposed offering map:
 
 ## Art provenance
 Every chakra card uses **real public-domain art** for its yantra (7 CC0 chakra yantras from
-Wikimedia Commons + a public-domain Ganesha from the Open Clip Art Library, via freesvg.org) and
-**the author's own photograph** for its mudra hand-position. The closing "descent" symbol is an
+Wikimedia Commons + a public-domain Ganesha from the Open Clip Art Library, via freesvg.org), the
+additional mantra cards use public-domain / CC0 Wikimedia symbols, and the chakra mudras use
+**the author's own photograph** for hand-position reference. The closing "descent" symbol is an
 original schematic. Full license log in [CREDITS.md](CREDITS.md).
 
 ### Mudra photos

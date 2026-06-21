@@ -1,10 +1,10 @@
 # Image Credits & Licenses
 
-All bundled artwork was downloaded from **Wikimedia Commons** (the seven yantras) and the
-**Open Clip Art Library** via freesvg.org (the Ganeśa), and verified individually. Every image
-below is **public domain / CC0** — no attribution is legally required — but each is logged here
-per good practice. No CC-BY / CC-BY-SA assets were used, so nothing here carries a
-mandatory-attribution obligation.
+All bundled artwork was downloaded from **Wikimedia Commons** (the seven yantras and two mantra
+symbols) and the **Open Clip Art Library** via freesvg.org (the Ganeśa), and verified
+individually. Every image below is **public domain / CC0** — no attribution is legally required —
+but each is logged here per good practice. No CC-BY / CC-BY-SA assets were used, so nothing here
+carries a mandatory-attribution obligation.
 
 ## Chakra yantras (real public-domain art)
 
@@ -49,6 +49,16 @@ the art; (2) injected `<style>path{fill:#F0E2B8}</style>` to recolor the default
 to warm cream-gold so it reads against the dark gold background. Path geometry is untouched. CC0
 imposes no conditions on modification or reuse.
 
+## Additional mantra symbols (real public-domain art)
+
+| File | Use | Commons page | License (verified) |
+|------|-----|--------------|--------------------|
+| `assets/mantras/Shivalinga_symbol.svg` | Śiva Mantra card | https://commons.wikimedia.org/wiki/File:Shivalinga_symbol.svg | Public domain / CC0 1.0 |
+| `assets/mantras/Om-mani-padme-hum-mantra.svg` | Mani Mantra card | https://commons.wikimedia.org/wiki/File:Om-mani-padme-hum-mantra.svg | Public domain / CC0 1.0 |
+
+Both SVGs are unmodified from Commons. The app applies a CSS filter at render time so the dark
+source art reads against the dark card background; the source files themselves are unchanged.
+
 ## Mudras — hand-position photos (the author's own work)
 
 Each mudra card has a **"View hand position"** button that opens a photo of the hand position.
@@ -92,10 +102,13 @@ released here as CC0 / public domain.
 | Solar Plexus | ✅ real PD yantra (CC0) | ✅ author's own photo |
 | Heart | ✅ real PD yantra (CC0) | ✅ author's own photo |
 | Throat | ✅ real PD yantra (CC0) | ✅ author's own photo |
+| Śiva Mantra | ✅ real PD symbol (CC0) | — |
 | Third Eye | ✅ real PD yantra (CC0) | ✅ author's own photo |
 | Crown | ✅ real PD yantra (CC0) | ✅ author's own photo |
+| Mani Mantra | ✅ real PD symbol (CC0) | — |
 | Descent & Close | ▦ original schematic (no single traditional symbol) | — |
 
 **Summary:** every chakra card uses real public-domain art for its yantra (7 CC0 yantras +
-a public-domain Ganeśa) and the author's own photograph for its mudra. The closing symbol is an
-original schematic. No third-party-licensed assets, and no GPS/EXIF metadata, ship anywhere.
+a public-domain Ganeśa), the additional mantra cards use public-domain / CC0 symbols, and the
+author's own photographs handle mudra reference. The closing symbol is an original schematic. No
+third-party-licensed assets, and no GPS/EXIF metadata, ship anywhere.

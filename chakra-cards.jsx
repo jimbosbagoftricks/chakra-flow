@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 
 /*
-  Ascending Chakra Practice — swipeable 9-card deck (62-minute practice).
+  Ascending Chakra Practice — swipeable 11-card deck.
 
   Importable ES-module version of the component. The runnable, zero-build
   version lives in index.html (open it directly in a phone browser).
 
-  Art:  seven public-domain (CC0) chakra yantras + a public-domain Ganeśa,
-        downloaded from Wikimedia Commons into ./assets/chakras/. See CREDITS.md.
+  Art:  seven public-domain (CC0) chakra yantras + a public-domain Ganeśa +
+        two public-domain mantra symbols. See CREDITS.md.
         Mudra glyphs and the closing symbol are schematic line drawings.
 
   Assets: this component references the SVGs by URL via <img>, so with a bundler
@@ -16,6 +16,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 */
 
 const DEFAULT_ART = "./assets/chakras";
+const DEFAULT_MANTRA_ART = "./assets/mantras";
 const CREAM = "#F3ECDD";
 const MUTED = "rgba(243,236,221,0.62)";
 
@@ -24,11 +25,12 @@ const MUTED = "rgba(243,236,221,0.62)";
    Chakra→note mapping is the common modern convention (root→crown = ascending
    C-major scale), NOT canonical — a chant-pitch aid only. Web Audio, no files. */
 const TONES = {
-  open: { hz: 136.10, note: "Om" }, root: { hz: 130.81, note: "C" },
+  open: { hz: 136.10, note: "Om" }, shiva: { hz: 136.10, note: "Om" },
+  root: { hz: 130.81, note: "C" },
   sacral: { hz: 146.83, note: "D" }, solar: { hz: 164.81, note: "E" },
   heart: { hz: 174.61, note: "F" }, throat: { hz: 196.00, note: "G" },
   thirdeye: { hz: 220.00, note: "A" }, crown: { hz: 246.94, note: "B" },
-  close: { hz: 130.81, note: "C" },
+  mani: { hz: 136.10, note: "Om" }, close: { hz: 130.81, note: "C" },
 };
 const TONE_TUNING_STORAGE = "chakraToneTuning";
 const TONE_TUNINGS = {
@@ -57,7 +59,7 @@ function _toneHz(cardId, tuning) {
   const tone = TONES[cardId];
   if (!tone) return null;
   if (tuning !== "soft432") return tone.hz;
-  if (cardId === "open") return 136.07;
+  if (cardId === "open" || cardId === "shiva" || cardId === "mani") return 136.07;
   return tone.hz * TONE_432_RATIO;
 }
 
@@ -176,7 +178,7 @@ function _droneSet(hz) {
    independent of each card's breathing practice (which is named, not paced). The
    yantra is the metronome: expand to prepare, hold, contract on the chant,
    then hold again; when the tone is on, the drone swells and dips with it. */
-const CHANT_DEFAULTS = { inhale: 4, exhale: 4, pause: 0, reps: 9 };
+const CHANT_DEFAULTS = { inhale: 4, exhale: 4, pause: 1, reps: 9 };
 const CHANT_LIMITS = { min: 1, pauseMin: 0, max: 12, repsMin: 1, repsMax: 108 };
 const CHANT_STORAGE = "chakraChantSettings";
 const CHANT_CARDS = { root: 1, sacral: 1, solar: 1, heart: 1, throat: 1, thirdeye: 1, crown: 1 };
@@ -348,66 +350,76 @@ function DescentGlyph() {
 }
 
 /* ── Practice data ── */
-function buildCards(art) {
+function buildCards(art, mantraArt) {
   return [
     { id: "open", art: `${art}/Ganesha.svg`, artAlt: "Ganeśa line drawing", real: true,
       eyebrow: "Opening · Obstacle Clearing", name: "Ganesha Invocation", sanskrit: "Gaṇapati",
-      breath: "Natural", mantra: "Om Gam Ganapataye Namaha", mantraCount: "×3",
+      mantra: "Om Gam Ganapataye Namaha", mantraCount: "×3",
       visual: "Clear the path before ascending.", body: "Settle. Set the intention to remove obstruction.",
       field: "#635117", panel: "#1e1a0e", accent: "#e6cd7f", ring: "#d1b047" },
     { id: "root", art: `${art}/Chakra1.svg`, artAlt: "Mūlādhāra yantra (4 petals)", real: true,
-      eyebrow: "0–7 min · Earth", name: "Root", sanskrit: "Mūlādhāra", petals: 4,
-      breath: "4-in / 6-out", mantra: "LAM", mantraCount: "×21",
+      name: "Root", sanskrit: "Mūlādhāra", element: "Earth", petals: 4,
+      mantra: "LAM", mantraCount: "×21",
       visual: "Red, base of spine, downward roots.", body: "Full weight, floor contact.",
       mudra: "apana", mudraName: "Apāna Mudrā",
       mudraHow: "Thumb, middle & ring fingertips together; index & pinky extended. Hands on knees, palms up.",
       field: "#652115", panel: "#1e100d", accent: "#e98c7c", ring: "#d15b47" },
     { id: "sacral", art: `${art}/Chakra2.svg`, artAlt: "Svādhiṣṭhāna yantra (6 petals)", real: true,
-      eyebrow: "7–14 min · Water", name: "Sacral", sanskrit: "Svādhiṣṭhāna", petals: 6,
+      name: "Sacral", sanskrit: "Svādhiṣṭhāna", element: "Water", petals: 6,
       breath: "Kapālabhāti breathwork", breathHelp: "kapalabhati", mantra: "VAM", mantraCount: "×21",
       visual: "Orange, lower abdomen, fluid and moving.", body: "Soften hips and lower belly.",
       mudra: "shakti", mudraName: "Shakti Mudrā",
-      mudraHow: "Pinky & ring fingers interlaced inward, thumbs tucked into the palms, index & middle extended and joined.",
+      mudraHow: "Thumbs tucked toward the palms, index and middle fingers joined; ring and pinky fingers point out or down.",
       field: "#673613", panel: "#1e140d", accent: "#eca979", ring: "#d18147" },
     { id: "solar", art: `${art}/Chakra3.svg`, artAlt: "Maṇipūra yantra (10 petals)", real: true,
-      eyebrow: "14–21 min · Fire", name: "Solar Plexus", sanskrit: "Maṇipūra", petals: 10,
+      name: "Solar Plexus", sanskrit: "Maṇipūra", element: "Fire", petals: 10,
       breath: "Kapālabhāti breathwork", breathHelp: "kapalabhati", mantra: "RAM", mantraCount: "×21",
       visual: "Yellow, solar plexus, a steady flame.", body: "Slight core engagement, then release.",
       mudra: "rudra", mudraName: "Rudra Mudrā",
       mudraHow: "Thumb, index & ring fingertips together; middle & pinky extended.",
       field: "#685312", panel: "#1e1a0d", accent: "#eed177", ring: "#d1b047" },
     { id: "heart", art: `${art}/Chakra4.svg`, artAlt: "Anāhata yantra (12 petals)", real: true,
-      eyebrow: "21–34 min · Air", name: "Heart", sanskrit: "Anāhata", petals: 12,
+      name: "Heart", sanskrit: "Anāhata", element: "Air", petals: 12,
       breath: "Nāḍī Śodhana ×10, then open breath", breathHelp: "nadiShodhana", mantra: "YAM", mantraCount: "×21",
       visual: "Emerald green, expanding on the exhale.", body: "Hands on the sternum if it calls you.",
       mudra: "padma", mudraName: "Padma (Lotus) Mudrā",
       mudraHow: "Heels of the hands together, thumbs & pinkies touching, the remaining fingers spread open like a blooming lotus.",
       field: "#24562d", panel: "#101b12", accent: "#90d59d", ring: "#59c06c" },
     { id: "throat", art: `${art}/Chakra5.svg`, artAlt: "Viśuddha yantra (16 petals)", real: true,
-      eyebrow: "34–41 min · Ether", name: "Throat", sanskrit: "Viśuddha", petals: 16,
+      name: "Throat", sanskrit: "Viśuddha", element: "Ether", petals: 16,
       breath: "Slow 4-in / 4-out", mantra: "HAM", mantraCount: "×21",
-      mantra2: "Om Namah Shivaya", mantra2Count: "×3",
       visual: "Bright blue, throat and jaw releasing.", body: "Chin slightly tucked, throat soft.",
       mudra: "granthita", mudraName: "Granthita Mudrā",
-      mudraHow: "Fingers interlaced inside the palms; thumbs & index fingers meet to form two rings.",
+      mudraHow: "Interlace the fingers; bring the thumb tips together and the index fingertips together to form interlaced rings.",
+      field: "#1b4960", panel: "#0e181d", accent: "#84c2e1", ring: "#47a4d1" },
+    { id: "shiva", art: `${mantraArt}/Shivalinga_symbol.svg`, artAlt: "Shiva linga symbol", real: true,
+      artFilter: "brightness(0) saturate(100%) invert(90%) sepia(18%) saturate(458%) hue-rotate(358deg) brightness(104%) contrast(91%)",
+      eyebrow: "Additional Mantra", name: "Śiva Mantra", sanskrit: "Om Namah Shivaya",
+      mantra: "Om Namah Shivaya", mantraCount: "×3",
+      visual: "Blue-white stillness at the throat.", body: "Let the sound be simple and unforced.",
       field: "#1b4960", panel: "#0e181d", accent: "#84c2e1", ring: "#47a4d1" },
     { id: "thirdeye", art: `${art}/Chakra6.svg`, artAlt: "Ājñā yantra (2 petals)", real: true,
-      eyebrow: "41–48 min · Light", name: "Third Eye", sanskrit: "Ājñā", petals: 2,
+      name: "Third Eye", sanskrit: "Ājñā", element: "Light", petals: 2,
       breath: "4-count inhale retention ×5", mantra: "AUM", mantraCount: "×21",
       visual: "Deep indigo, still, between the brows.", body: "Eyes relaxed upward behind closed lids.",
       mudra: "hakini", mudraName: "Hakini Mudrā",
       mudraHow: "All ten fingertips touching their opposite, hands held at chest or brow level.",
       field: "#242456", panel: "#10101b", accent: "#9090d5", ring: "#5959bf" },
     { id: "crown", art: `${art}/Chakra7.svg`, artAlt: "Sahasrāra yantra (thousand petals)", real: true,
-      eyebrow: "48–57 min · Consciousness", name: "Crown", sanskrit: "Sahasrāra", petals: "1000",
-      breath: "None — silence", mantra: "AH", mantraCount: "×21",
-      mantra2: "Om Mani Padme Hum", mantra2Count: "×3",
+      name: "Crown", sanskrit: "Sahasrāra", element: "Consciousness", petals: "1000",
+      mantra: "AH", mantraCount: "×21",
       visual: "Violet to white, dissolving upward.", body: "No effort, no agenda.",
       mudra: "sahasrara", mudraName: "Sahasrāra Mudrā",
-      mudraHow: "Hands in the lap, all fingers interlaced, index fingers extended and pointing upward.",
+      mudraHow: "Interlace the fingers with the pinky fingers extended.",
+      field: "#3d2457", panel: "#16101b", accent: "#b290d5", ring: "#8b58c0" },
+    { id: "mani", art: `${mantraArt}/Om-mani-padme-hum-mantra.svg`, artAlt: "Om Mani Padme Hum in Tibetan script", real: true,
+      artFilter: "brightness(0) saturate(100%) invert(90%) sepia(18%) saturate(458%) hue-rotate(358deg) brightness(104%) contrast(91%)",
+      eyebrow: "Additional Mantra", name: "Mani Mantra", sanskrit: "Om Mani Padme Hum",
+      mantra: "Om Mani Padme Hum", mantraCount: "×3",
+      visual: "Violet-white compassion and spaciousness.", body: "Let the phrase settle rather than pushing for volume.",
       field: "#3d2457", panel: "#16101b", accent: "#b290d5", ring: "#8b58c0" },
     { id: "close", descent: true, real: false, artAlt: "Descending chakra colours",
-      eyebrow: "57–62 min · Grounding", name: "Descent & Close", sanskrit: "Return",
+      eyebrow: "Grounding", name: "Descent & Close", sanskrit: "Return",
       breath: "One slow breath per center, descending", mantra: "LAM", mantraCount: "×1",
       mantra2: "Om Shanti Shanti Shanti", mantra2Count: "×3",
       visual: "Each color acknowledged, dimming to red.", body: "Full weight, eyes open slowly.",
@@ -438,9 +450,12 @@ const BREATH_HELP = {
 };
 
 function Row({ label, accent, children, action }) {
+  const longLabel = label.length > 12;
   return (
     <div style={{ display: "flex", gap: 14, padding: "11px 0", borderTop: `1px solid ${accent}22`, textAlign: "left" }}>
-      <div style={{ flexShrink: 0, width: 58, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: accent, paddingTop: 4 }}>{label}</div>
+      <div style={{ flexShrink: 0, width: longLabel ? 94 : 58, fontSize: longLabel ? 9 : 10,
+                    lineHeight: 1.25, letterSpacing: longLabel ? "0.11em" : "0.16em",
+                    textTransform: "uppercase", color: accent, paddingTop: 4 }}>{label}</div>
       <div style={{ flex: 1, color: CREAM, fontSize: 16.5, lineHeight: 1.4, minWidth: 0,
                     display: action ? "flex" : "block", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
         <span>{children}</span>
@@ -505,7 +520,7 @@ function About({ onClose }) {
         <AboutSection title="How To Use The App">
           <p>Open <b style={{ fontWeight: 600 }}>Chakra Flow</b>, then move through the cards by swiping, using the arrow buttons, or tapping the progress dots.</p>
           <p>Tap <b style={{ fontWeight: 600 }}>♪</b> for the current chakra drone. Use <b style={{ fontWeight: 600 }}>Settings</b> to adjust tone tuning, bīja repetitions, chant pacing, and pause length.</p>
-          <p>Tap <b style={{ fontWeight: 600 }}>pace chant</b> to start the bīja metronome. The yantra expands for inhale and contracts during the chant. While pacing is active, tap the yantra to begin a countdown set.</p>
+          <p>Tap <b style={{ fontWeight: 600 }}>pace chant</b> to start the bīja metronome. The yantra expands for inhale and contracts during the chant. While pacing is active, use the count button beside pace chant to begin, pause, or resume a countdown set.</p>
           <p>Use <b style={{ fontWeight: 600 }}>?</b> beside breath rows for technique references, and <b style={{ fontWeight: 600 }}>View hand position</b> for mudra photos.</p>
         </AboutSection>
 
@@ -519,7 +534,7 @@ function About({ onClose }) {
         </AboutSection>
 
         <AboutSection title="Media Credits">
-          <p>The seven chakra yantras are public-domain / CC0 images from Wikimedia Commons. The Ganeśa opening image is public-domain / CC0 art from the Open Clip Art Library via freesvg.org.</p>
+          <p>The seven chakra yantras and the two mantra-card symbols are public-domain / CC0 images from Wikimedia Commons. The Ganeśa opening image is public-domain / CC0 art from the Open Clip Art Library via freesvg.org.</p>
           <p>The mudra photos are the author's own hand-position photos, released with the project as CC0 / public domain. EXIF/GPS metadata has been stripped from the bundled images.</p>
           <p>The app icon uses the Root / Mūlādhāra yantra, and the closing descent symbol is an original schematic. Full provenance is logged in <i>CREDITS.md</i>.</p>
         </AboutSection>
@@ -531,6 +546,13 @@ function About({ onClose }) {
 }
 
 function Options({ chantSettings, toneTuning, onChange, onToneChange, onReset, onClose, accent }) {
+  const [draftValues, setDraftValues] = useState({});
+  const clearDraft = (key) => setDraftValues((prev) => {
+    if (!(key in prev)) return prev;
+    const next = { ...prev };
+    delete next[key];
+    return next;
+  });
   const control = (key, label) => {
     const isPause = key === "pause";
     const isReps = key === "reps";
@@ -543,14 +565,25 @@ function Options({ chantSettings, toneTuning, onChange, onToneChange, onReset, o
           <label htmlFor={`chant-${key}`} style={{ fontSize: 12, letterSpacing: "0.18em", textTransform: "uppercase", color: accent }}>{label}</label>
           <input id={`chant-${key}-number`} type="number" min={min}
             max={max} step="1"
-            value={chantSettings[key]} onChange={(e) => onChange(key, e.target.value)}
+            value={draftValues[key] ?? String(chantSettings[key])}
+            onChange={(e) => {
+              const raw = e.target.value;
+              if (raw === "") {
+                setDraftValues((prev) => ({ ...prev, [key]: "" }));
+                return;
+              }
+              const next = _clampChantValue(raw, chantSettings[key], min, max);
+              setDraftValues((prev) => ({ ...prev, [key]: String(next) }));
+              onChange(key, next);
+            }}
+            onBlur={() => clearDraft(key)}
             aria-label={`${label} ${unit}`}
             style={{ width: 64, borderRadius: 10, border: `1px solid ${accent}55`, background: "rgba(5,3,8,0.4)",
                      color: CREAM, padding: "7px 8px", textAlign: "center", font: "16px 'EB Garamond',serif" }} />
         </div>
         <input id={`chant-${key}`} type="range" min={min}
           max={max} step="1"
-          value={chantSettings[key]} onChange={(e) => onChange(key, e.target.value)}
+          value={chantSettings[key]} onChange={(e) => { clearDraft(key); onChange(key, e.target.value); }}
           aria-label={`${label} ${unit}`}
           style={{ width: "100%", accentColor: accent }} />
       </div>
@@ -592,7 +625,7 @@ function Options({ chantSettings, toneTuning, onChange, onToneChange, onReset, o
           <button className="nav" onClick={onReset}
             style={{ padding: "10px 18px", borderRadius: 24, border: `1px solid ${accent}66`,
                      background: "transparent", color: accent, font: "15px 'EB Garamond',serif",
-                     cursor: "pointer" }}>Reset 4 / 4 / 0 / 21</button>
+                     cursor: "pointer" }}>Reset 4 / 4 / 1 / 9</button>
           <button className="nav" onClick={onClose}
             style={{ padding: "10px 22px", borderRadius: 24, border: "1px solid rgba(243,236,221,0.3)",
                      background: "transparent", color: CREAM, font: "15px 'EB Garamond',serif",
@@ -648,8 +681,8 @@ function HomePage({ card, accent, onFlow, onOptions, onInfo }) {
   );
 }
 
-export default function ChakraCards({ artBase = DEFAULT_ART }) {
-  const CARDS = React.useMemo(() => buildCards(artBase), [artBase]);
+export default function ChakraCards({ artBase = DEFAULT_ART, mantraArtBase = DEFAULT_MANTRA_ART }) {
+  const CARDS = React.useMemo(() => buildCards(artBase, mantraArtBase), [artBase, mantraArtBase]);
   const [view, setView] = useState("home");
   const [idx, setIdx] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
@@ -713,8 +746,19 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
     updateChantCountdown({
       remaining: chantSettings.reps,
       skipCurrentExhale: currentPhaseKindRef.current === "exhale",
+      paused: false,
     });
   }, [chanting, c.id, chantSettings.reps, updateChantCountdown]);
+
+  const toggleChantCountdown = useCallback(() => {
+    if (!chanting || !CHANT_CARDS[c.id]) return;
+    const active = chantCountdownRef.current;
+    if (!active) {
+      armChantCountdown();
+      return;
+    }
+    updateChantCountdown({ ...active, paused: !active.paused });
+  }, [chanting, c.id, armChantCountdown, updateChantCountdown]);
 
   useEffect(() => {
     updateChantCountdown(null);
@@ -759,12 +803,16 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
         lastKind = kind;
         if (previousKind === "exhale" && kind !== "exhale" && chantCountdownRef.current) {
           const active = chantCountdownRef.current;
-          if (active.skipCurrentExhale) {
+          if (active.paused) {
+            updateChantCountdown(active);
+          } else if (active.skipCurrentExhale) {
             updateChantCountdown({ ...active, skipCurrentExhale: false });
           } else {
             const remaining = Math.max(0, active.remaining - 1);
             if (remaining <= 0) {
               updateChantCountdown(null);
+              setSound(false);
+              _droneSet(null);
               setChanting(false);
               return;
             }
@@ -773,7 +821,8 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
         }
         if (sound && (kind === "inhale" || kind === "exhale")) _chantMarker(markerHz, kind);
       }
-      const countdown = chantCountdownRef.current ? " · " + chantCountdownRef.current.remaining : "";
+      const activeCountdown = chantCountdownRef.current;
+      const countdown = activeCountdown ? " · " + (activeCountdown.paused ? "paused " : "") + activeCountdown.remaining : "";
       const label = (name === "Exhale" && seed ? "Chant · " + seed : name) + countdown;
       if (phaseRef.current && label !== last) { last = label; phaseRef.current.textContent = label; }
       raf = requestAnimationFrame(frame);
@@ -807,6 +856,17 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [go, view]);
 
+  useEffect(() => {
+    if (view !== "flow" || typeof window === "undefined" || !window.history?.pushState) return;
+    const state = { chakraFlowGuard: true };
+    try { window.history.pushState(state, "", window.location.href); } catch (e) { return; }
+    const onPop = () => {
+      try { window.history.pushState(state, "", window.location.href); } catch (e) {}
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [view]);
+
   const onStart = (e) => (touch.current = e.touches[0].clientX);
   const onEnd = (e) => {
     if (view !== "flow") return;
@@ -815,7 +875,7 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
     if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1);
     touch.current = null;
   };
-  const canArmCountdown = chanting && CHANT_CARDS[c.id];
+  const canCountChant = chanting && CHANT_CARDS[c.id];
 
   return (
     <div onTouchStart={onStart} onTouchEnd={onEnd}
@@ -891,32 +951,24 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
       <div className="card-anim" key={c.id}
         style={{ flex: 1, minHeight: 0, overflowY: "auto", display: "flex", flexDirection: "column",
                  alignItems: "center", justifyContent: "center", padding: "6px 26px 14px", textAlign: "center" }}>
-        <div style={{ fontSize: 11, letterSpacing: "0.34em", textTransform: "uppercase", color: c.accent, marginBottom: 10 }}>{c.eyebrow}</div>
+        {c.eyebrow && (
+          <div style={{ fontSize: 11, letterSpacing: "0.34em", textTransform: "uppercase", color: c.accent, marginBottom: 10 }}>{c.eyebrow}</div>
+        )}
         <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontWeight: 500, fontSize: 42, lineHeight: 1.0, margin: "0 0 4px", letterSpacing: "0.01em" }}>{c.name}</h1>
         <div style={{ fontStyle: "italic", fontSize: 17, color: c.accent, opacity: 0.92, marginBottom: 2 }}>
-          {c.sanskrit}{c.petals ? <span style={{ color: MUTED, fontStyle: "normal", fontSize: 13 }}>{"  ·  "}{c.petals === "1000" ? "1000 petals" : `${c.petals} ${c.petals === 1 ? "petal" : "petals"}`}</span> : null}
+          {c.sanskrit}{(c.element || c.petals) ? <span style={{ color: MUTED, fontStyle: "normal", fontSize: 13 }}>{"  ·  "}{[c.element, c.petals ? (c.petals === "1000" ? "1000 petals" : `${c.petals} ${c.petals === 1 ? "petal" : "petals"}`) : null].filter(Boolean).join("  ·  ")}</span> : null}
         </div>
 
         <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center",
-                      width: "min(58vw,236px)", height: "min(58vw,236px)", margin: "14px 0 6px" }}>
+                      width: "min(72vw,300px)", height: "min(72vw,300px)", margin: "14px 0 6px" }}>
           <div style={{ position: "absolute", inset: 0, borderRadius: "50%",
                         background: "radial-gradient(circle, rgba(243,236,221,0.17) 0%, rgba(243,236,221,0.05) 46%, transparent 70%)",
                         boxShadow: `0 0 0 1px ${c.ring}33, inset 0 0 26px ${c.ring}22` }} />
           <div className="sym" ref={symRef}
-                        role={canArmCountdown ? "button" : undefined}
-                        tabIndex={canArmCountdown ? 0 : undefined}
-                        aria-label={canArmCountdown ? `Start ${chantSettings.reps} bīja countdown` : undefined}
-                        onClick={canArmCountdown ? armChantCountdown : undefined}
-                        onKeyDown={canArmCountdown ? (e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            armChantCountdown();
-                          }
-                        } : undefined}
-                        style={{ position: "relative", width: "74%", height: "74%", display: "flex",
+                        style={{ position: "relative", width: "90%", height: "90%", display: "flex",
                         alignItems: "center", justifyContent: "center", color: c.accent, filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.45))",
-                        cursor: canArmCountdown ? "pointer" : "default" }}>
-            {c.descent ? <DescentGlyph /> : <img src={c.art} alt={c.artAlt} draggable="false" style={{ width: "100%", height: "100%", objectFit: "contain" }} />}
+                        cursor: "default" }}>
+            {c.descent ? <DescentGlyph /> : <img src={c.art} alt={c.artAlt} draggable="false" style={{ width: "100%", height: "100%", objectFit: "contain", filter: c.artFilter || undefined }} />}
           </div>
         </div>
 
@@ -940,33 +992,50 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
               </div>
             )}
             {CHANT_CARDS[c.id] && (
-              <button className="nav" onClick={() => {
-                setChanting((v) => {
-                  if (v) updateChantCountdown(null);
-                  return !v;
-                });
-              }}
-                aria-pressed={chanting} aria-label={chanting ? "Stop chant pacer" : "Start chant pacer"}
-                style={{ marginTop: 12, display: "inline-flex", alignItems: "center", gap: 7,
-                         padding: "5px 15px", borderRadius: 22, cursor: "pointer",
-                         border: `1px solid ${c.accent}${chanting ? "" : "66"}`,
-                         background: chanting ? `${c.accent}22` : "transparent", color: c.accent,
-                         fontFamily: "'EB Garamond',serif", fontSize: 13, letterSpacing: "0.05em" }}>
-                <span style={{ fontSize: 11 }}>{chanting ? "❚❚" : "▷"}</span>
-                {chanting ? "pacing chant" : "pace chant"}
-              </button>
+              <div style={{ display: "inline-flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 12 }}>
+                <button className="nav" onClick={() => {
+                  setChanting((v) => {
+                    if (v) updateChantCountdown(null);
+                    return !v;
+                  });
+                }}
+                  aria-pressed={chanting} aria-label={chanting ? "Stop chant pacer" : "Start chant pacer"}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 7,
+                           padding: "5px 15px", borderRadius: 22, cursor: "pointer",
+                           border: `1px solid ${c.accent}${chanting ? "" : "66"}`,
+                           background: chanting ? `${c.accent}22` : "transparent", color: c.accent,
+                           fontFamily: "'EB Garamond',serif", fontSize: 13, letterSpacing: "0.05em" }}>
+                  <span style={{ fontSize: 11 }}>{chanting ? "❚❚" : "▷"}</span>
+                  {chanting ? "pacing chant" : "pace chant"}
+                </button>
+                {canCountChant && (
+                  <button className="nav" onClick={toggleChantCountdown}
+                    aria-pressed={!!chantCountdown && !chantCountdown.paused}
+                    aria-label={chantCountdown ? (chantCountdown.paused ? "Resume bīja countdown" : "Pause bīja countdown") : `Start ${chantSettings.reps} bīja countdown`}
+                    style={{ display: "inline-flex", alignItems: "center", gap: 7,
+                             padding: "5px 15px", borderRadius: 22, cursor: "pointer",
+                             border: `1px solid ${c.accent}${chantCountdown ? "" : "66"}`,
+                             background: chantCountdown ? `${c.accent}22` : "transparent", color: c.accent,
+                             fontFamily: "'EB Garamond',serif", fontSize: 13, letterSpacing: "0.05em" }}>
+                    <span style={{ fontSize: 11 }}>{chantCountdown && !chantCountdown.paused ? "❚❚" : "▷"}</span>
+                    {chantCountdown ? (chantCountdown.paused ? `resume ${chantCountdown.remaining}` : `count ${chantCountdown.remaining}`) : `count ${chantSettings.reps}`}
+                  </button>
+                )}
+              </div>
             )}
           </div>
-          <Row label="Breath" accent={c.accent}
-            action={c.breathHelp ? (
-              <button className="nav" onClick={() => setBreathHelpCard(c)}
-                aria-label={`About ${c.breath}`} title={`About ${c.breath}`}
-                style={{ width: 26, height: 26, flexShrink: 0, borderRadius: "50%", border: `1px solid ${c.accent}66`,
-                         background: `${c.accent}14`, color: c.accent, fontSize: 15, lineHeight: 1,
-                         cursor: "pointer", fontFamily: "system-ui,-apple-system,sans-serif" }}>
-                ?
-              </button>
-            ) : null}>{c.breath}</Row>
+          {c.breath && (
+            <Row label="Additional Breath Practice" accent={c.accent}
+              action={c.breathHelp ? (
+                <button className="nav" onClick={() => setBreathHelpCard(c)}
+                  aria-label={`About ${c.breath}`} title={`About ${c.breath}`}
+                  style={{ width: 26, height: 26, flexShrink: 0, borderRadius: "50%", border: `1px solid ${c.accent}66`,
+                           background: `${c.accent}14`, color: c.accent, fontSize: 15, lineHeight: 1,
+                           cursor: "pointer", fontFamily: "system-ui,-apple-system,sans-serif" }}>
+                  ?
+                </button>
+              ) : null}>{c.breath}</Row>
+          )}
           <Row label="Visual" accent={c.accent}>{c.visual}</Row>
           <Row label="Body" accent={c.accent}>{c.body}</Row>
           {c.mudra && (

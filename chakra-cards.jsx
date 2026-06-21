@@ -176,7 +176,7 @@ function _droneSet(hz) {
    independent of each card's breathing practice (which is named, not paced). The
    yantra is the metronome: expand to prepare, hold, contract on the chant,
    then hold again; when the tone is on, the drone swells and dips with it. */
-const CHANT_DEFAULTS = { inhale: 4, exhale: 4, pause: 0, reps: 21 };
+const CHANT_DEFAULTS = { inhale: 4, exhale: 4, pause: 0, reps: 9 };
 const CHANT_LIMITS = { min: 1, pauseMin: 0, max: 12, repsMin: 1, repsMax: 108 };
 const CHANT_STORAGE = "chakraChantSettings";
 const CHANT_CARDS = { root: 1, sacral: 1, solar: 1, heart: 1, throat: 1, thirdeye: 1, crown: 1 };
@@ -494,7 +494,7 @@ function Caveats({ onClose }) {
         <p style={{ fontSize: 12.5, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(243,236,221,0.5)", margin: "0 0 22px" }}>Honest caveats</p>
         <p><b style={{ fontWeight: 600 }}>Three traditions, on purpose.</b> This sequence deliberately blends Tantric/yogic practice (bīja mantras, chakras), Shaivite devotion (<i>Om Namah Shivaya</i>), and Tibetan Buddhist practice (<i>Om Mani Padme Hum</i>). That syncretism is intentional, not accidental.</p>
         <p><b style={{ fontWeight: 600 }}>Mudra mappings are not canonical.</b> The mudra-to-chakra assignments here vary by lineage and are not fixed in the source texts. The bīja mantras (LAM, VAM, RAM, YAM, HAM, AUM/OM) have firmer textual grounding than the mudra assignments do.</p>
-        <p><b style={{ fontWeight: 600 }}>Practice length is adjustable.</b> Following the card instructions as written will produce an approximately 60-minute practice. To shorten or lengthen it, adjust mantra repetition totals or breathing pace. The author prefers 9 iterations of each bīja for a roughly 40-minute sauna session.</p>
+        <p><b style={{ fontWeight: 600 }}>Practice length is adjustable.</b> The default 9 repetitions of each bīja suit a shorter sauna-length practice. To lengthen the sequence toward an approximately 60-minute practice, raise mantra repetition totals or slow the breathing pace.</p>
         <p><b style={{ fontWeight: 600 }}>Kapālabhāti is forceful.</b> Treat it as an active abdominal breathing practice, not a gentle breath cue. Skip it, slow it down, or substitute quiet breathing if it creates dizziness, pressure, strain, nausea, or agitation; use qualified guidance if you are pregnant, recently postpartum or post-surgery, or if you have heart, blood-pressure, seizure, hernia, eye-pressure, or significant respiratory concerns.</p>
         <p><b style={{ fontWeight: 600 }}>Practice responsibility.</b> This deck can hold a sequence, but it cannot read your body. Keep the intensity, timing, and breath choices within what is safe and appropriate for you today.</p>
         <hr style={{ border: 0, borderTop: "1px solid rgba(243,236,221,0.16)", margin: "22px 0" }} />

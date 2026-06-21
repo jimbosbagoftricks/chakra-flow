@@ -113,9 +113,9 @@ import ChakraCards from "./chakra-cards.jsx";
   panel defaults to the lower A4=432 tuning, with standard A4=440 available for comparison.
   This is a chant-pitch aid, not canonical. Generated live with Web Audio (no audio files).
 - **▷ pace chant** (under the Mantra, on every chakra) is a silent **seed-chant metronome**. The
-  default cadence is inhale 4 / chant on the 4-count exhale / no pause, and the ⚙ options panel
-  lets you set global inhale, exhale, and pause seconds for all chakra mantra chants. The same
-  pause duration is used after inhale and after exhale.
+  default cadence is 9 bīja repetitions, inhale 4 / chant on the 4-count exhale / no pause, and
+  the ⚙ options panel lets you set global repetitions, inhale, exhale, and pause seconds for all
+  chakra mantra chants. The same pause duration is used after inhale and after exhale.
   The yantra is the metronome — it expands to prepare, holds large after inhale, contracts on the
   chant, and holds small after exhale, with a quiet "CHANT · LAM" word on the out-breath. When
   the ♪ tone is on, the
@@ -202,9 +202,9 @@ data ships. To swap or add a photo, edit the `MUDRA_PHOTOS` map in both `index.h
   Shaivite (*Om Namah Shivaya*), and Tibetan Buddhist (*Om Mani Padme Hum*). Intentional.
 - Mudra-to-chakra mappings are **not** canonically fixed; they vary by lineage. The bīja
   mantras have firmer textual grounding than the mudra assignments.
-- Following the card instructions as written produces an approximately 60-minute practice.
-  To shorten or lengthen it, adjust mantra repetition totals or breathing pace. The author
-  prefers 9 iterations of each bīja for a roughly 40-minute sauna session.
+- The default 9 repetitions of each bīja suit a shorter sauna-length practice. To lengthen
+  the sequence toward an approximately 60-minute practice, raise mantra repetition totals or
+  slow the breathing pace.
 - Kapālabhāti is forceful abdominal breathing. Skip it, slow it down, or substitute quiet
   breathing if it creates dizziness, pressure, strain, nausea, or agitation; use qualified
   guidance if you are pregnant, recently postpartum or post-surgery, or if you have heart,

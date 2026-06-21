@@ -195,7 +195,7 @@ function _droneSet(hz) {
    independent of each card's breathing practice (which is named, not paced). The
    yantra is the metronome: expand to prepare, hold, contract on the chant,
    then hold again; when the tone is on, the drone swells and dips with it. */
-const CHANT_DEFAULTS = { inhale: 4, exhale: 4, pause: 0, reps: 21 };
+const CHANT_DEFAULTS = { inhale: 4, exhale: 4, pause: 0, reps: 9 };
 const CHANT_LIMITS = { min: 1, pauseMin: 0, max: 12, repsMin: 1, repsMax: 108 };
 const CHANT_STORAGE = "chakraChantSettings";
 const CHANT_CARDS = { root: 1, sacral: 1, solar: 1, heart: 1, throat: 1, thirdeye: 1, crown: 1 };
@@ -588,10 +588,10 @@ function Caveats({ onClose }) {
         mantras (LAM, VAM, RAM, YAM, HAM, AUM/OM) have firmer textual grounding than the
         mudra assignments do.</p>
 
-        <p><b style={{fontWeight:600}}>Practice length is adjustable.</b> Following the card
-        instructions as written will produce an approximately 60-minute practice. To shorten or
-        lengthen it, adjust mantra repetition totals or breathing pace. The author prefers
-        9 iterations of each bīja for a roughly 40-minute sauna session.</p>
+        <p><b style={{fontWeight:600}}>Practice length is adjustable.</b> The default 9
+        repetitions of each bīja suit a shorter sauna-length practice. To lengthen the sequence
+        toward an approximately 60-minute practice, raise mantra repetition totals or slow the
+        breathing pace.</p>
 
         <p><b style={{fontWeight:600}}>Kapālabhāti is forceful.</b> Treat it as an active abdominal
         breathing practice, not a gentle breath cue. Skip it, slow it down, or substitute quiet

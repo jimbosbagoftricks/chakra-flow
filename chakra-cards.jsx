@@ -38,12 +38,12 @@ const TONE_TUNINGS = {
 const TONE_432_RATIO = 432 / 440;
 
 function _readToneTuning() {
-  if (typeof window === "undefined") return "standard";
+  if (typeof window === "undefined") return "soft432";
   try {
     const saved = window.localStorage.getItem(TONE_TUNING_STORAGE);
-    return TONE_TUNINGS[saved] ? saved : "standard";
+    return TONE_TUNINGS[saved] ? saved : "soft432";
   } catch (e) {
-    return "standard";
+    return "soft432";
   }
 }
 
@@ -364,21 +364,21 @@ function buildCards(art) {
       field: "#652115", panel: "#1e100d", accent: "#e98c7c", ring: "#d15b47" },
     { id: "sacral", art: `${art}/Chakra2.svg`, artAlt: "Svādhiṣṭhāna yantra (6 petals)", real: true,
       eyebrow: "7–14 min · Water", name: "Sacral", sanskrit: "Svādhiṣṭhāna", petals: 6,
-      breath: "Kapālabhāti 2×30, 30s rest", mantra: "VAM", mantraCount: "×21",
+      breath: "Kapālabhāti breathwork", breathHelp: "kapalabhati", mantra: "VAM", mantraCount: "×21",
       visual: "Orange, lower abdomen, fluid and moving.", body: "Soften hips and lower belly.",
       mudra: "shakti", mudraName: "Shakti Mudrā",
       mudraHow: "Pinky & ring fingers interlaced inward, thumbs tucked into the palms, index & middle extended and joined.",
       field: "#673613", panel: "#1e140d", accent: "#eca979", ring: "#d18147" },
     { id: "solar", art: `${art}/Chakra3.svg`, artAlt: "Maṇipūra yantra (10 petals)", real: true,
       eyebrow: "14–21 min · Fire", name: "Solar Plexus", sanskrit: "Maṇipūra", petals: 10,
-      breath: "Kapālabhāti 2×30, 30s rest", mantra: "RAM", mantraCount: "×21",
+      breath: "Kapālabhāti breathwork", breathHelp: "kapalabhati", mantra: "RAM", mantraCount: "×21",
       visual: "Yellow, solar plexus, a steady flame.", body: "Slight core engagement, then release.",
       mudra: "rudra", mudraName: "Rudra Mudrā",
       mudraHow: "Thumb, index & ring fingertips together; middle & pinky extended.",
       field: "#685312", panel: "#1e1a0d", accent: "#eed177", ring: "#d1b047" },
     { id: "heart", art: `${art}/Chakra4.svg`, artAlt: "Anāhata yantra (12 petals)", real: true,
       eyebrow: "21–34 min · Air", name: "Heart", sanskrit: "Anāhata", petals: 12,
-      breath: "Nāḍī Śodhana ×10, then open breath", mantra: "YAM", mantraCount: "×21",
+      breath: "Nāḍī Śodhana ×10, then open breath", breathHelp: "nadiShodhana", mantra: "YAM", mantraCount: "×21",
       visual: "Emerald green, expanding on the exhale.", body: "Hands on the sternum if it calls you.",
       mudra: "padma", mudraName: "Padma (Lotus) Mudrā",
       mudraHow: "Heels of the hands together, thumbs & pinkies touching, the remaining fingers spread open like a blooming lotus.",
@@ -415,11 +415,71 @@ function buildCards(art) {
   ];
 }
 
-function Row({ label, accent, children }) {
+const BREATH_HELP = {
+  kapalabhati: {
+    title: "Kapālabhāti",
+    subtitle: "Forceful breathwork",
+    body: "Use this card text as a reminder, not as instruction. Kapālabhāti uses active abdominal exhales and passive inhales; if you have not learned it, review a technique source first and keep the intensity modest.",
+    caution: "Skip it or substitute quiet breathing if it creates dizziness, pressure, strain, nausea, or agitation. Use qualified guidance if you are pregnant, recently postpartum or post-surgery, or if you have heart, blood-pressure, seizure, hernia, eye-pressure, or significant respiratory concerns.",
+    links: [
+      { label: "Yoga Journal how-to", href: "https://www.yogajournal.com/practice/energetics/pranayama/skull-shining-breath/" },
+      { label: "Art of Living cautions", href: "https://www.artofliving.org/yoga/breathing-techniques/skull-shining-breath-kapal-bhati" },
+    ],
+  },
+  nadiShodhana: {
+    title: "Nāḍī Śodhana",
+    subtitle: "Alternate-nostril breathing",
+    body: "Use this for the Heart-card alternate-nostril breath. If you are newer to pranayama, stay with simple inhales and exhales before adding retention, fixed ratios, or mantra counts.",
+    caution: "Keep the breath smooth and unforced. Drop the hand position or return to normal breathing if the shoulder, breath, or attention becomes strained.",
+    links: [
+      { label: "Yoga Journal step-by-step", href: "https://www.yogajournal.com/practice/energetics/pranayama/channel-cleaning-breath/" },
+    ],
+  },
+};
+
+function Row({ label, accent, children, action }) {
   return (
     <div style={{ display: "flex", gap: 14, padding: "11px 0", borderTop: `1px solid ${accent}22`, textAlign: "left" }}>
       <div style={{ flexShrink: 0, width: 58, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: accent, paddingTop: 4 }}>{label}</div>
-      <div style={{ flex: 1, color: CREAM, fontSize: 16.5, lineHeight: 1.4 }}>{children}</div>
+      <div style={{ flex: 1, color: CREAM, fontSize: 16.5, lineHeight: 1.4, minWidth: 0,
+                    display: action ? "flex" : "block", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+        <span>{children}</span>
+        {action}
+      </div>
+    </div>
+  );
+}
+
+function BreathHelp({ card, onClose }) {
+  const help = BREATH_HELP[card.breathHelp];
+  if (!help) return null;
+  return (
+    <div role="dialog" aria-modal="true" aria-label={`${help.title} notes`} onClick={onClose}
+      style={{ position: "fixed", inset: 0, zIndex: 55, background: "rgba(5,3,8,0.9)", backdropFilter: "blur(3px)",
+               display: "flex", alignItems: "center", justifyContent: "center", padding: "26px", color: CREAM }}>
+      <div onClick={(e) => e.stopPropagation()}
+        style={{ width: "min(100%,420px)", border: `1px solid ${card.accent}44`, borderRadius: 18,
+                 background: `${card.panel}f2`, boxShadow: "0 18px 60px rgba(0,0,0,0.55)", padding: "22px 22px 20px" }}>
+        <div style={{ fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: card.accent, marginBottom: 5 }}>{help.subtitle}</div>
+        <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 29, fontWeight: 500, margin: "0 0 12px" }}>{help.title}</h2>
+        <p style={{ margin: "0 0 12px", fontSize: 16, lineHeight: 1.5 }}>{help.body}</p>
+        <p style={{ margin: "0 0 16px", fontSize: 14.5, lineHeight: 1.5, color: "rgba(243,236,221,0.75)" }}>{help.caution}</p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 9 }}>
+          {help.links.map((link) => (
+            <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer"
+              style={{ border: `1px solid ${card.accent}66`, borderRadius: 22, padding: "8px 12px",
+                       color: card.accent, textDecoration: "none", fontSize: 13.5, letterSpacing: "0.04em" }}>
+              {link.label}
+            </a>
+          ))}
+        </div>
+        <p style={{ margin: "14px 0 0", fontSize: 12.5, color: "rgba(243,236,221,0.52)" }}>External links require internet access.</p>
+        <button onClick={onClose}
+          style={{ marginTop: 16, padding: "9px 18px", borderRadius: 24, border: "1px solid rgba(243,236,221,0.28)",
+                   background: "transparent", color: CREAM, fontSize: 14, letterSpacing: "0.08em", cursor: "pointer" }}>
+          Close
+        </button>
+      </div>
     </div>
   );
 }
@@ -572,6 +632,7 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
   const [showInfo, setShowInfo] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [photoCard, setPhotoCard] = useState(null);
+  const [breathHelpCard, setBreathHelpCard] = useState(null);
   const [sound, setSound] = useState(false);
   const [toneTuning, setToneTuning] = useState(_readToneTuning);
   const [chanting, setChanting] = useState(false); // seed-chant pacer on/off
@@ -715,7 +776,7 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "Escape") { setShowInfo(false); setShowOptions(false); setPhotoCard(null); }
+      if (e.key === "Escape") { setShowInfo(false); setShowOptions(false); setPhotoCard(null); setBreathHelpCard(null); }
       else if (view === "flow" && e.key === "ArrowRight") go(1);
       else if (view === "flow" && e.key === "ArrowLeft") go(-1);
     };
@@ -759,6 +820,7 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
         onClose={() => setShowOptions(false)}
         accent={ui.accent} />}
       {photoCard && <MudraLightbox card={photoCard} onClose={() => setPhotoCard(null)} />}
+      {breathHelpCard && <BreathHelp card={breathHelpCard} onClose={() => setBreathHelpCard(null)} />}
 
       {view === "home" ? (
         <HomePage
@@ -872,7 +934,16 @@ export default function ChakraCards({ artBase = DEFAULT_ART }) {
               </button>
             )}
           </div>
-          <Row label="Breath" accent={c.accent}>{c.breath}</Row>
+          <Row label="Breath" accent={c.accent}
+            action={c.breathHelp ? (
+              <button className="nav" onClick={() => setBreathHelpCard(c)}
+                aria-label={`About ${c.breath}`} title={`About ${c.breath}`}
+                style={{ width: 26, height: 26, flexShrink: 0, borderRadius: "50%", border: `1px solid ${c.accent}66`,
+                         background: `${c.accent}14`, color: c.accent, fontSize: 15, lineHeight: 1,
+                         cursor: "pointer", fontFamily: "system-ui,-apple-system,sans-serif" }}>
+                ?
+              </button>
+            ) : null}>{c.breath}</Row>
           <Row label="Visual" accent={c.accent}>{c.visual}</Row>
           <Row label="Body" accent={c.accent}>{c.body}</Row>
           {c.mudra && (

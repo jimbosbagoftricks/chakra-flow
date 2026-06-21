@@ -12,9 +12,9 @@
 - [ ] **Design a tutorial page** - explain the app's chakra associations, common usage patterns, and alternate ways to work with the deck.
   - Cover that color, mantra, mudra, breath, tone, visualization, body cue, timing, and sequencing can be used together or separately.
   - Keep the tutorial plural and practical: avoid implying there is only one correct lineage, ratio, or ritual form.
-- [ ] **Add breathing-practice help links in the app** - decide where Kapalabhati and Nadi Shodhana references should appear in the UI.
-  - Candidate locations: info modal, per-card breath row help button, or an Options/References tab.
-  - Keep safety language conservative for Kapalabhati.
+- [x] ~~Add breathing-practice help links in the app~~ (2026-06-21)
+  - Added per-card breath row help buttons for Kapālabhāti and Nāḍī Śodhana.
+  - Kept Kapālabhāti card text less prescriptive and moved technique/safety context into the pop-up.
 - [ ] **Fix stale mudra-folder docs** - update `assets/mudras/README.md` so it reflects that real photos are now present.
 - [ ] **Explore stronger chant audio cues** - current swell/dip was not obvious enough during real practice.
   - Consider phase-change pulses, inhale/exhale timbre differences, stronger gain shaping, or optional spoken/tonal cues.

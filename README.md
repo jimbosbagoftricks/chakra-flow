@@ -110,8 +110,8 @@ import ChakraCards from "./chakra-cards.jsx";
 - **♪ tone** (top-right) plays a soft drone at the current chakra's pitch to chant the bīja
   against; it follows you from card to card and crossfades. Tap again to mute. The chakra→note
   mapping is the common modern convention (Root C → Crown B, ascending C-major). The ⚙ options
-  panel can compare standard A4=440 tuning with a lower A4=432 tuning. This is a chant-pitch aid,
-  not canonical. Generated live with Web Audio (no audio files).
+  panel defaults to the lower A4=432 tuning, with standard A4=440 available for comparison.
+  This is a chant-pitch aid, not canonical. Generated live with Web Audio (no audio files).
 - **▷ pace chant** (under the Mantra, on every chakra) is a silent **seed-chant metronome**. The
   default cadence is inhale 4 / chant on the 4-count exhale / no pause, and the ⚙ options panel
   lets you set global inhale, exhale, and pause seconds for all chakra mantra chants. The same
@@ -135,7 +135,8 @@ import ChakraCards from "./chakra-cards.jsx";
 ## Practice references
 
 The card text names a few breathing practices but intentionally does not try to teach them in full.
-Use external technique references when refining card copy or adding in-app help:
+The app includes small breath-row help pop-ups for the higher-context practices, with external
+technique references:
 
 - **Kapālabhāti / Skull-Shining Breath:** [Yoga Journal how-to](https://www.yogajournal.com/practice/energetics/pranayama/skull-shining-breath/) and [Art of Living cautions](https://www.artofliving.org/yoga/breathing-techniques/skull-shining-breath-kapal-bhati). This is a forceful abdominal practice; the app should keep safety language conservative.
 - **Nāḍī Śodhana / Alternate-Nostril Breathing:** [Yoga Journal step-by-step](https://www.yogajournal.com/practice/energetics/pranayama/channel-cleaning-breath/). Beginning instructions should avoid retention-heavy ratios unless a qualified source is linked and the user explicitly opts in.

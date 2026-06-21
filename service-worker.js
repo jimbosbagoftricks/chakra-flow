@@ -1,4 +1,4 @@
-const CACHE_NAME = "chakra-flow-v2026-06-21-5";
+const CACHE_NAME = "chakra-flow-v2026-06-21-6";
 
 const APP_SHELL = [
   "./",

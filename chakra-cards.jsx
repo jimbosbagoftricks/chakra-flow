@@ -950,7 +950,7 @@ export default function ChakraCards({ artBase = DEFAULT_ART, mantraArtBase = DEF
 
       <div className="card-anim" key={c.id}
         style={{ flex: 1, minHeight: 0, overflowY: "auto", display: "flex", flexDirection: "column",
-                 alignItems: "center", justifyContent: "center", padding: "6px 26px 14px", textAlign: "center" }}>
+                 alignItems: "center", justifyContent: "flex-start", padding: "16px 26px 14px", textAlign: "center" }}>
         {c.eyebrow && (
           <div style={{ fontSize: 11, letterSpacing: "0.34em", textTransform: "uppercase", color: c.accent, marginBottom: 10 }}>{c.eyebrow}</div>
         )}

@@ -23,6 +23,7 @@
 - [ ] **Publish and test the PWA beta** - verify GitHub Pages deploy, Android install, wake lock, offline launch, and prompted updates.
   - Local `file://` cannot verify service-worker behavior; use localhost or HTTPS.
   - Expected public URL: `https://jimbosbagoftricks.github.io/chakra-flow/`.
+  - Current deploy path: push `main` to `gh-pages` after release commits.
 
 ## Waiting On
 

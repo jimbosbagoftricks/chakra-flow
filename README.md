@@ -22,7 +22,7 @@ remote is created. Android Chrome can install that page to the home screen, use 
 `assets/icons/`, cache the app shell for offline use, and hold the screen awake while Chakra Flow
 is open.
 
-The GitHub Pages workflow publishes the PWA at:
+GitHub Pages publishes the PWA from the `gh-pages` branch at:
 
 <https://jimbosbagoftricks.github.io/chakra-flow/>
 
@@ -33,6 +33,12 @@ on the current version.
 For each beta publish, bump `CACHE_NAME` in `service-worker.js`. That makes the browser install a
 new waiting service worker and show the update prompt. If only `index.html` changes and the service
 worker file does not, the browser may not present the prompted update flow.
+
+After committing and pushing `main`, publish the latest app with:
+
+```bash
+git push origin main:gh-pages
+```
 
 Local install/update testing must use a real web origin:
 

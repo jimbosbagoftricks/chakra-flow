@@ -22,6 +22,10 @@ Each SVG also carries an embedded license comment ("License: public domain"); th
 file page reports the CC0 dedication verbatim and credits author *Atarax42*. The files are
 unmodified from Commons.
 
+The PWA launcher icon in `assets/icons/` uses the Root / Mūlādhāra yantra
+(`assets/chakras/Chakra1.svg`) as its central source image, framed on a dark app-icon
+background and exported at the required Android/iOS icon sizes.
+
 ## Opening glyph (real public-domain art)
 
 | File | Use | Source page | Download | License (verified) |

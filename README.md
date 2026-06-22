@@ -82,7 +82,7 @@ Chakras/
     ├── chakras/
     │   ├── Chakra1.svg … Chakra7.svg   (CC0 yantras)
     │   └── Ganesha.svg                  (public-domain, recolored)
-    ├── mantras/          ← public-domain additional-mantra symbols
+    ├── mantras/          ← additional-mantra symbols and license-tracked art
     └── mudras/           ← drop your own hand-position photos here
 ```
 
@@ -182,10 +182,11 @@ Proposed offering map:
 
 ## Art provenance
 Every chakra card uses **real public-domain art** for its yantra (7 CC0 chakra yantras from
-Wikimedia Commons + a public-domain Ganesha from the Open Clip Art Library, via freesvg.org), the
-additional mantra cards use public-domain / CC0 Wikimedia symbols, and the chakra mudras use
-**the author's own photograph** for hand-position reference. The closing "descent" symbol is an
-original schematic. Full license log in [CREDITS.md](CREDITS.md).
+Wikimedia Commons + a public-domain Ganesha from the Open Clip Art Library, via freesvg.org). The
+Mani card uses a public-domain / CC0 Wikimedia symbol, while the Śiva card uses a credited CC
+BY-SA trident yantra from Wikimedia Commons. The chakra mudras use **the author's own photograph**
+for hand-position reference. The closing "descent" symbol is an original schematic. Full license
+log in [CREDITS.md](CREDITS.md).
 
 ### Mudra photos
 
@@ -207,9 +208,9 @@ data ships. To swap or add a photo, edit the `MUDRA_PHOTOS` map in both `index.h
   Shaivite (*Om Namah Shivaya*), and Tibetan Buddhist (*Om Mani Padme Hum*). Intentional.
 - Mudra-to-chakra mappings are **not** canonically fixed; they vary by lineage. The bīja
   mantras have firmer textual grounding than the mudra assignments.
-- The default 9 repetitions of each bīja suit a shorter sauna-length practice. To lengthen
-  the sequence toward an approximately 60-minute practice, raise mantra repetition totals or
-  slow the breathing pace.
+- The default 9 repetitions of each bīja reflect the author's current working sequence. To
+  shorten, lengthen, or otherwise reshape the practice, adjust repetition totals, chant pacing,
+  pause length, breath choices, or the cards you include.
 - Kapālabhāti is forceful abdominal breathing. Skip it, slow it down, or substitute quiet
   breathing if it creates dizziness, pressure, strain, nausea, or agitation; use qualified
   guidance if you are pregnant, recently postpartum or post-surgery, or if you have heart,

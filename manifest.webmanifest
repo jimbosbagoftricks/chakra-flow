@@ -1,7 +1,7 @@
 {
   "name": "Ascending Chakra Practice",
   "short_name": "Chakra Flow",
-  "description": "A mobile-first chakra practice deck with chant pacing, tone support, mudra references, and offline-first behavior.",
+  "description": "A structure-agnostic chakra practice deck with chant pacing, tone support, mudra references, and offline-first behavior.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

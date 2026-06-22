@@ -64,7 +64,7 @@ for (const f of ["Ganesha.svg", "Chakra1.svg", "Chakra2.svg", "Chakra3.svg",
   const buf = fs.readFileSync(path.join(ROOT, "assets/chakras", f));
   assets[f] = "data:image/svg+xml;base64," + buf.toString("base64");
 }
-for (const f of ["Shivalinga_symbol.svg", "Om-mani-padme-hum-mantra.svg"]) {
+for (const f of ["Trident_Yantra_of_Parama_Siva.svg", "Om-mani-padme-hum-mantra.svg"]) {
   const buf = fs.readFileSync(path.join(ROOT, "assets/mantras", f));
   assets[f] = "data:image/svg+xml;base64," + buf.toString("base64");
 }

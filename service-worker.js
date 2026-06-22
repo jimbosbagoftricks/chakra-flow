@@ -1,4 +1,4 @@
-const CACHE_NAME = "chakra-flow-v2026-06-21-6";
+const CACHE_NAME = "chakra-flow-v2026-06-21-7";
 
 const APP_SHELL = [
   "./",
@@ -20,7 +20,7 @@ const APP_SHELL = [
   "./assets/chakras/Chakra5.svg",
   "./assets/chakras/Chakra6.svg",
   "./assets/chakras/Chakra7.svg",
-  "./assets/mantras/Shivalinga_symbol.svg",
+  "./assets/mantras/Trident_Yantra_of_Parama_Siva.svg",
   "./assets/mantras/Om-mani-padme-hum-mantra.svg",
   "./assets/mudras/apana_palms_down.jpg",
   "./assets/mudras/apana_palms_up.jpg",

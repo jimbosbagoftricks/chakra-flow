@@ -355,6 +355,8 @@ function buildCards(art, mantraArt) {
     { id: "open", art: `${art}/Ganesha.svg`, artAlt: "Ganeśa line drawing", real: true,
       eyebrow: "Opening · Obstacle Clearing", name: "Ganesha Invocation", sanskrit: "Gaṇapati",
       mantra: "Om Gam Ganapataye Namaha", mantraCount: "×3",
+      homeTradition: "Hindu / Gaṇapatya opening practice.",
+      translation: "Om, Gaṃ, salutations to Ganapati.",
       visual: "Clear the path before ascending.", body: "Settle. Set the intention to remove obstruction.",
       field: "#635117", panel: "#1e1a0e", accent: "#e6cd7f", ring: "#d1b047" },
     { id: "root", art: `${art}/Chakra1.svg`, artAlt: "Mūlādhāra yantra (4 petals)", real: true,
@@ -392,11 +394,14 @@ function buildCards(art, mantraArt) {
       mudra: "granthita", mudraName: "Granthita Mudrā",
       mudraHow: "Interlace the fingers; bring the thumb tips together and the index fingertips together to form interlaced rings.",
       field: "#1b4960", panel: "#0e181d", accent: "#84c2e1", ring: "#47a4d1" },
-    { id: "shiva", art: `${mantraArt}/Shivalinga_symbol.svg`, artAlt: "Shiva linga symbol", real: true,
+    { id: "shiva", art: `${mantraArt}/Trident_Yantra_of_Parama_Siva.svg`, artAlt: "Trident yantra of Parama Śiva", real: true,
       artFilter: "brightness(0) saturate(100%) invert(90%) sepia(18%) saturate(458%) hue-rotate(358deg) brightness(104%) contrast(91%)",
       eyebrow: "Additional Mantra", name: "Śiva Mantra", sanskrit: "Om Namah Shivaya",
       mantra: "Om Namah Shivaya", mantraCount: "×3",
-      visual: "Blue-white stillness at the throat.", body: "Let the sound be simple and unforced.",
+      homeTradition: "Śaiva Hindu practice.",
+      translation: "Om, I bow to Śiva.",
+      visual: "Pañcākṣara: Na, Ma, Śi, Va, Ya as earth, water, fire, air, and ether.",
+      body: "Placed after Viśuddha because the throat's ether field opens the ascent into sound and space.",
       field: "#1b4960", panel: "#0e181d", accent: "#84c2e1", ring: "#47a4d1" },
     { id: "thirdeye", art: `${art}/Chakra6.svg`, artAlt: "Ājñā yantra (2 petals)", real: true,
       name: "Third Eye", sanskrit: "Ājñā", element: "Light", petals: 2,
@@ -416,6 +421,8 @@ function buildCards(art, mantraArt) {
       artFilter: "brightness(0) saturate(100%) invert(90%) sepia(18%) saturate(458%) hue-rotate(358deg) brightness(104%) contrast(91%)",
       eyebrow: "Additional Mantra", name: "Mani Mantra", sanskrit: "Om Mani Padme Hum",
       mantra: "Om Mani Padme Hum", mantraCount: "×3",
+      homeTradition: "Mahāyāna and Vajrayāna Buddhist practice, especially Tibetan.",
+      translation: "Om, jewel in the lotus, hum.",
       visual: "Violet-white compassion and spaciousness.", body: "Let the phrase settle rather than pushing for volume.",
       field: "#3d2457", panel: "#16101b", accent: "#b290d5", ring: "#8b58c0" },
     { id: "close", descent: true, real: false, artAlt: "Descending chakra colours",
@@ -450,7 +457,7 @@ const BREATH_HELP = {
 };
 
 function Row({ label, accent, children, action }) {
-  const longLabel = label.length > 12;
+  const longLabel = label.length > 9;
   return (
     <div style={{ display: "flex", gap: 14, padding: "11px 0", borderTop: `1px solid ${accent}22`, textAlign: "left" }}>
       <div style={{ flexShrink: 0, width: longLabel ? 94 : 58, fontSize: longLabel ? 9 : 10,
@@ -527,14 +534,14 @@ function About({ onClose }) {
         <AboutSection title="About This Practice">
           <p><b style={{ fontWeight: 600 }}>Three traditions, on purpose.</b> This sequence deliberately blends Tantric/yogic practice (bīja mantras, chakras), Shaivite devotion (<i>Om Namah Shivaya</i>), and Tibetan Buddhist practice (<i>Om Mani Padme Hum</i>).</p>
           <p><b style={{ fontWeight: 600 }}>Mudra mappings are not canonical.</b> The mudra-to-chakra assignments vary by lineage. The bīja mantras (LAM, VAM, RAM, YAM, HAM, AUM/OM) have firmer textual grounding than the mudra assignments do.</p>
-          <p><b style={{ fontWeight: 600 }}>Practice length is adjustable.</b> The default 9 repetitions of each bīja suit a shorter sauna-length practice. To lengthen the sequence toward an approximately 60-minute practice, raise mantra repetition totals or slow the breathing pace.</p>
+          <p><b style={{ fontWeight: 600 }}>Practice structure is adjustable.</b> The default 9 repetitions of each bīja reflect the author's current working sequence. To shorten, lengthen, or otherwise reshape the practice, adjust repetition totals, chant pacing, pause length, breath choices, or the cards you include.</p>
           <p><b style={{ fontWeight: 600 }}>Kapālabhāti is forceful.</b> Treat it as active abdominal breathing, not a gentle breath cue. Skip it, slow it down, or substitute quiet breathing if it creates dizziness, pressure, strain, nausea, or agitation; use qualified guidance if you are pregnant, recently postpartum or post-surgery, or if you have heart, blood-pressure, seizure, hernia, eye-pressure, or significant respiratory concerns.</p>
           <p><b style={{ fontWeight: 600 }}>Chakra tones are practical, not canonical.</b> The optional drone uses the common modern ascending C-major mapping (Root C → Crown B), with 432 and 440 tuning options.</p>
           <p><b style={{ fontWeight: 600 }}>Practice responsibility.</b> This deck can hold a sequence, but it cannot read your body. Keep the intensity, timing, and breath choices within what is safe and appropriate for you today.</p>
         </AboutSection>
 
         <AboutSection title="Media Credits">
-          <p>The seven chakra yantras and the two mantra-card symbols are public-domain / CC0 images from Wikimedia Commons. The Ganeśa opening image is public-domain / CC0 art from the Open Clip Art Library via freesvg.org.</p>
+          <p>The seven chakra yantras and the Mani mantra symbol are public-domain / CC0 images from Wikimedia Commons. The Śiva mantra card uses a CC BY-SA trident yantra from Wikimedia Commons, credited in the license log. The Ganeśa opening image is public-domain / CC0 art from the Open Clip Art Library via freesvg.org.</p>
           <p>The mudra photos are the author's own hand-position photos, released with the project as CC0 / public domain. EXIF/GPS metadata has been stripped from the bundled images.</p>
           <p>The app icon uses the Root / Mūlādhāra yantra, and the closing descent symbol is an original schematic. Full provenance is logged in <i>CREDITS.md</i>.</p>
         </AboutSection>
@@ -1024,6 +1031,8 @@ export default function ChakraCards({ artBase = DEFAULT_ART, mantraArtBase = DEF
               </div>
             )}
           </div>
+          {c.homeTradition && <Row label="Home Tradition" accent={c.accent}>{c.homeTradition}</Row>}
+          {c.translation && <Row label="Translation" accent={c.accent}>{c.translation}</Row>}
           {c.breath && (
             <Row label="Additional Breath Practice" accent={c.accent}
               action={c.breathHelp ? (

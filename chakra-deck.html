@@ -1157,7 +1157,8 @@ const CARDS = [{
   sanskrit: "Viśuddha",
   element: "Ether",
   petals: 16,
-  breath: "Slow 4-in / 4-out",
+  breath: "Gentle Ujjayi breath ×5",
+  breathHelp: "ujjayi",
   mantra: "HAM",
   mantraCount: "×21",
   visual: "Bright blue, throat and jaw releasing.",
@@ -1295,6 +1296,16 @@ const BREATH_HELP = {
     links: [{
       label: "Yoga Journal step-by-step",
       href: "https://www.yogajournal.com/practice/energetics/pranayama/channel-cleaning-breath/"
+    }]
+  },
+  ujjayi: {
+    title: "Ujjayi",
+    subtitle: "Gentle ocean breath",
+    body: "Use this as a light throat-centered preparation before chanting HAM. Keep the mouth closed, breathe through the nose, and let a soft ocean-like sound form by gently narrowing the back of the throat.",
+    caution: "Keep it smooth and unforced. Do not clamp the throat, chase volume, or add breath holds here unless you already have qualified instruction.",
+    links: [{
+      label: "Art of Living guide",
+      href: "https://www.artofliving.org/us-en/breathwork/pranayama/ujjayi-breathing"
     }]
   }
 };
@@ -2447,7 +2458,29 @@ function Deck() {
       padding: "6px 18px 14px",
       boxShadow: `0 8px 30px rgba(0,0,0,0.35)`
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, c.breath && /*#__PURE__*/React.createElement(Row, {
+    label: "Optional Preparation Breathing",
+    accent: c.accent,
+    action: c.breathHelp ? /*#__PURE__*/React.createElement("button", {
+      className: "nav",
+      onClick: () => setBreathHelpCard(c),
+      "aria-label": `About ${c.breath}`,
+      title: `About ${c.breath}`,
+      style: {
+        width: 26,
+        height: 26,
+        flexShrink: 0,
+        borderRadius: "50%",
+        border: `1px solid ${c.accent}66`,
+        background: `${c.accent}14`,
+        color: c.accent,
+        fontSize: 15,
+        lineHeight: 1,
+        cursor: "pointer",
+        fontFamily: "system-ui,-apple-system,sans-serif"
+      }
+    }, "?") : null
+  }, c.breath), /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "14px 0 12px"
     }
@@ -2552,29 +2585,7 @@ function Deck() {
   }, c.homeTradition), c.translation && /*#__PURE__*/React.createElement(Row, {
     label: "Translation",
     accent: c.accent
-  }, c.translation), c.breath && /*#__PURE__*/React.createElement(Row, {
-    label: "Additional Breath Practice",
-    accent: c.accent,
-    action: c.breathHelp ? /*#__PURE__*/React.createElement("button", {
-      className: "nav",
-      onClick: () => setBreathHelpCard(c),
-      "aria-label": `About ${c.breath}`,
-      title: `About ${c.breath}`,
-      style: {
-        width: 26,
-        height: 26,
-        flexShrink: 0,
-        borderRadius: "50%",
-        border: `1px solid ${c.accent}66`,
-        background: `${c.accent}14`,
-        color: c.accent,
-        fontSize: 15,
-        lineHeight: 1,
-        cursor: "pointer",
-        fontFamily: "system-ui,-apple-system,sans-serif"
-      }
-    }, "?") : null
-  }, c.breath), /*#__PURE__*/React.createElement(Row, {
+  }, c.translation), /*#__PURE__*/React.createElement(Row, {
     label: "Visual",
     accent: c.accent
   }, c.visual), /*#__PURE__*/React.createElement(Row, {

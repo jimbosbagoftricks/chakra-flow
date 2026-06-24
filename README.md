@@ -144,6 +144,7 @@ technique references:
 
 - **Kapālabhāti / Skull-Shining Breath:** [Yoga Journal how-to](https://www.yogajournal.com/practice/energetics/pranayama/skull-shining-breath/) and [Art of Living cautions](https://www.artofliving.org/yoga/breathing-techniques/skull-shining-breath-kapal-bhati). This is a forceful abdominal practice; the app should keep safety language conservative.
 - **Nāḍī Śodhana / Alternate-Nostril Breathing:** [Yoga Journal step-by-step](https://www.yogajournal.com/practice/energetics/pranayama/channel-cleaning-breath/). Beginning instructions should avoid retention-heavy ratios unless a qualified source is linked and the user explicitly opts in.
+- **Ujjayi / Ocean Breath:** [Art of Living guide](https://www.artofliving.org/us-en/breathwork/pranayama/ujjayi-breathing). Keep the app wording soft and non-straining; the throat cue should support the HAM card, not become a forceful technique.
 
 ## Rebuilding the standalone
 

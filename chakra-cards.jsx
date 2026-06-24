@@ -389,7 +389,7 @@ function buildCards(art, mantraArt) {
       field: "#24562d", panel: "#101b12", accent: "#90d59d", ring: "#59c06c" },
     { id: "throat", art: `${art}/Chakra5.svg`, artAlt: "Viśuddha yantra (16 petals)", real: true,
       name: "Throat", sanskrit: "Viśuddha", element: "Ether", petals: 16,
-      breath: "Slow 4-in / 4-out", mantra: "HAM", mantraCount: "×21",
+      breath: "Gentle Ujjayi breath ×5", breathHelp: "ujjayi", mantra: "HAM", mantraCount: "×21",
       visual: "Bright blue, throat and jaw releasing.", body: "Chin slightly tucked, throat soft.",
       mudra: "granthita", mudraName: "Granthita Mudrā",
       mudraHow: "Interlace the fingers; bring the thumb tips together and the index fingertips together to form interlaced rings.",
@@ -452,6 +452,15 @@ const BREATH_HELP = {
     caution: "Keep the breath smooth and unforced. Drop the hand position or return to normal breathing if the shoulder, breath, or attention becomes strained.",
     links: [
       { label: "Yoga Journal step-by-step", href: "https://www.yogajournal.com/practice/energetics/pranayama/channel-cleaning-breath/" },
+    ],
+  },
+  ujjayi: {
+    title: "Ujjayi",
+    subtitle: "Gentle ocean breath",
+    body: "Use this as a light throat-centered preparation before chanting HAM. Keep the mouth closed, breathe through the nose, and let a soft ocean-like sound form by gently narrowing the back of the throat.",
+    caution: "Keep it smooth and unforced. Do not clamp the throat, chase volume, or add breath holds here unless you already have qualified instruction.",
+    links: [
+      { label: "Art of Living guide", href: "https://www.artofliving.org/us-en/breathwork/pranayama/ujjayi-breathing" },
     ],
   },
 };
@@ -988,6 +997,18 @@ export default function ChakraCards({ artBase = DEFAULT_ART, mantraArtBase = DEF
         <div style={{ width: "100%", maxWidth: 380, marginTop: 8, background: `${c.panel}d9`,
                       border: `1px solid ${c.accent}26`, borderRadius: 16, padding: "6px 18px 14px",
                       boxShadow: "0 8px 30px rgba(0,0,0,0.35)" }}>
+          {c.breath && (
+            <Row label="Optional Preparation Breathing" accent={c.accent}
+              action={c.breathHelp ? (
+                <button className="nav" onClick={() => setBreathHelpCard(c)}
+                  aria-label={`About ${c.breath}`} title={`About ${c.breath}`}
+                  style={{ width: 26, height: 26, flexShrink: 0, borderRadius: "50%", border: `1px solid ${c.accent}66`,
+                           background: `${c.accent}14`, color: c.accent, fontSize: 15, lineHeight: 1,
+                           cursor: "pointer", fontFamily: "system-ui,-apple-system,sans-serif" }}>
+                  ?
+                </button>
+              ) : null}>{c.breath}</Row>
+          )}
           <div style={{ padding: "14px 0 12px" }}>
             <div style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: c.accent, marginBottom: 6 }}>Mantra</div>
             <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 25, lineHeight: 1.2, color: CREAM }}>
@@ -1033,18 +1054,6 @@ export default function ChakraCards({ artBase = DEFAULT_ART, mantraArtBase = DEF
           </div>
           {c.homeTradition && <Row label="Home Tradition" accent={c.accent}>{c.homeTradition}</Row>}
           {c.translation && <Row label="Translation" accent={c.accent}>{c.translation}</Row>}
-          {c.breath && (
-            <Row label="Additional Breath Practice" accent={c.accent}
-              action={c.breathHelp ? (
-                <button className="nav" onClick={() => setBreathHelpCard(c)}
-                  aria-label={`About ${c.breath}`} title={`About ${c.breath}`}
-                  style={{ width: 26, height: 26, flexShrink: 0, borderRadius: "50%", border: `1px solid ${c.accent}66`,
-                           background: `${c.accent}14`, color: c.accent, fontSize: 15, lineHeight: 1,
-                           cursor: "pointer", fontFamily: "system-ui,-apple-system,sans-serif" }}>
-                  ?
-                </button>
-              ) : null}>{c.breath}</Row>
-          )}
           <Row label="Visual" accent={c.accent}>{c.visual}</Row>
           <Row label="Body" accent={c.accent}>{c.body}</Row>
           {c.mudra && (

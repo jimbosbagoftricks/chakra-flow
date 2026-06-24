@@ -2459,7 +2459,7 @@ function Deck() {
       boxShadow: `0 8px 30px rgba(0,0,0,0.35)`
     }
   }, c.breath && /*#__PURE__*/React.createElement(Row, {
-    label: "Optional Preparation Breathing",
+    label: "Optional Preparation",
     accent: c.accent,
     action: c.breathHelp ? /*#__PURE__*/React.createElement("button", {
       className: "nav",
@@ -2482,7 +2482,8 @@ function Deck() {
     }, "?") : null
   }, c.breath), /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: "14px 0 12px"
+      padding: "14px 0 12px",
+      borderTop: c.breath ? `1px solid ${c.accent}22` : "none"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {

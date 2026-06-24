@@ -998,7 +998,7 @@ export default function ChakraCards({ artBase = DEFAULT_ART, mantraArtBase = DEF
                       border: `1px solid ${c.accent}26`, borderRadius: 16, padding: "6px 18px 14px",
                       boxShadow: "0 8px 30px rgba(0,0,0,0.35)" }}>
           {c.breath && (
-            <Row label="Optional Preparation Breathing" accent={c.accent}
+            <Row label="Optional Preparation" accent={c.accent}
               action={c.breathHelp ? (
                 <button className="nav" onClick={() => setBreathHelpCard(c)}
                   aria-label={`About ${c.breath}`} title={`About ${c.breath}`}
@@ -1009,7 +1009,7 @@ export default function ChakraCards({ artBase = DEFAULT_ART, mantraArtBase = DEF
                 </button>
               ) : null}>{c.breath}</Row>
           )}
-          <div style={{ padding: "14px 0 12px" }}>
+          <div style={{ padding: "14px 0 12px", borderTop: c.breath ? `1px solid ${c.accent}22` : "none" }}>
             <div style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: c.accent, marginBottom: 6 }}>Mantra</div>
             <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 25, lineHeight: 1.2, color: CREAM }}>
               {c.mantra} <span style={{ color: c.accent, fontSize: 18 }}>{CHANT_CARDS[c.id] ? `×${chantSettings.reps}` : c.mantraCount}</span>

@@ -109,27 +109,28 @@ import ChakraCards from "./chakra-cards.jsx";
   The flow has a ⌂ button to return home.
 - **Swipe** left/right, **arrow buttons**, **tappable progress dots**, or **← / →** keys.
 - Background tint cross-fades between cards.
-- **♪ tone** (top-right) plays a soft drone at the current chakra's pitch to chant the bīja
+- **♪ tone** (top-right) plays a soft drone at the current card's pitch to chant
   against; it follows you from card to card and crossfades. Tap again to mute. The chakra→note
   mapping is the common modern convention (Root C → Crown B, ascending C-major). The ⚙ options
   panel defaults to the lower A4=432 tuning, with standard A4=440 available for comparison.
   This is a chant-pitch aid, not canonical. Generated live with Web Audio (no audio files).
-- **▷ pace chant** (under the Mantra, on every chakra) is a silent **seed-chant metronome**. The
-  default cadence is 9 bīja repetitions, inhale 4 / chant on the 4-count exhale / 1-second pause, and
-  the ⚙ options panel lets you set global repetitions, inhale, exhale, and pause seconds for all
-  chakra mantra chants. The same pause duration is used after inhale and after exhale.
-  The yantra is the metronome — it expands to prepare, holds large after inhale, contracts on the
+- **▷ pace chant** (under the Mantra, on chantable cards) is a silent **chant metronome**. The
+  default bīja cadence is 9 repetitions, inhale 4 / chant on the 4-count exhale / 1-second pause, and
+  the ⚙ options panel lets you set global bīja repetitions, inhale, exhale, and pause seconds. The
+  same pause duration is used after inhale and after exhale. Additional mantra cards keep their
+  displayed fixed counts.
+  The symbol is the metronome — it expands to prepare, holds large after inhale, contracts on the
   chant, and holds small after exhale, with a quiet "CHANT · LAM" word on the out-breath. When
   the ♪ tone is on, the
   drone **swells and dips with it** (the eyes-closed audio cue). No beeps. The functional chant
-  scale cue stays active even when reduced-motion disables ambient animation. The seed chant is
-  paced *independently* of each card's breathing practice (Kapālabhāti, Nāḍī Śodhana, etc.), which
+  scale cue stays active even when reduced-motion disables ambient animation. Chant pacing runs
+  *independently* of each card's breathing practice (Kapālabhāti, Nāḍī Śodhana, etc.), which
   is named but not paced.
-  While pacing is active, the adjacent count button starts a bīja countdown set; tapping it again
-  pauses or resumes the countdown.
+  While pacing is active, the adjacent count button starts a countdown set using that card's displayed
+  count; tapping it again pauses or resumes the countdown.
 - **⛶ View hand position** (under the Mudra) opens a photo of the hand position in a lightbox.
 - **⚙ Options** adjusts the global mantra-chant inhale, exhale, pause timing, bīja repetitions,
-  and tone tuning.
+  countdown advancement/autoplay, and tone tuning.
   Settings are saved on the device.
 - The hosted PWA keeps the screen awake while **Chakra Flow** is open when the browser supports
   Wake Lock. This requires HTTPS or localhost; `file://` cannot do it.

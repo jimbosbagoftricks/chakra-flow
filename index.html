@@ -42,7 +42,7 @@ const ART = "./assets/chakras";
 const MANTRA_ART = "./assets/mantras";
 
 /* ───────────────────── Chakra tones ─────────────────────
-   A soft sustained drone per card, to give the pitch for chanting the bīja.
+   A soft sustained drone per card, to give the pitch for chanting.
    The chakra→note mapping is the common modern Western convention (root→crown
    = C-major scale ascending) — NOT canonical; it's a chant-pitch aid only.
    Generated live with the Web Audio API (no audio files, works fully offline). */
@@ -200,15 +200,16 @@ function _droneSet(hz) {
   a.master.gain.exponentialRampToValueAtTime(0.14, t0 + 0.9);
 }
 
-/* ───────────────────── Seed-chant pacer ─────────────────────
-   One uniform, silent cadence for chanting the bīja — the same on every chakra,
+/* ───────────────────── Chant pacer ─────────────────────
+   One uniform, silent cadence for chanting — the same on every paced card,
    independent of each card's breathing practice (which is named, not paced). The
-   yantra is the metronome: expand to prepare, hold, contract on the chant,
+   symbol is the metronome: expand to prepare, hold, contract on the chant,
    then hold again; when the tone is on, the drone swells and dips with it. */
-const CHANT_DEFAULTS = { inhale: 4, exhale: 4, pause: 1, reps: 9 };
+const CHANT_DEFAULTS = { inhale: 4, exhale: 4, pause: 1, reps: 9, advance: false, autoplay: false };
 const CHANT_LIMITS = { min: 1, pauseMin: 0, max: 12, repsMin: 1, repsMax: 108 };
 const CHANT_STORAGE = "chakraChantSettings";
-const CHANT_CARDS = { root: 1, sacral: 1, solar: 1, heart: 1, throat: 1, thirdeye: 1, crown: 1 };
+const BIJA_CHANT_CARDS = { root: 1, sacral: 1, solar: 1, heart: 1, throat: 1, thirdeye: 1, crown: 1 };
+const CHANTABLE_CARDS = { open: 1, root: 1, sacral: 1, solar: 1, heart: 1, throat: 1, shiva: 1, thirdeye: 1, crown: 1, mani: 1 };
 const _ease = (p) => 0.5 - 0.5 * Math.cos(Math.PI * Math.min(1, Math.max(0, p)));
 
 function _chantMix(from, to, p) {
@@ -281,6 +282,19 @@ function _clampChantValue(value, fallback, min = CHANT_LIMITS.min, max = CHANT_L
   return Math.min(max, Math.max(min, n));
 }
 
+function _fixedChantReps(card, fallback = 1) {
+  const match = String(card.mantraCount || "").match(/\d+/);
+  return match ? _clampChantValue(match[0], fallback, 1, CHANT_LIMITS.repsMax) : fallback;
+}
+
+function _chantReps(card, settings) {
+  return BIJA_CHANT_CARDS[card.id] ? settings.reps : _fixedChantReps(card);
+}
+
+function _chantLabel(card) {
+  return card.chantLabel || (card.mantra || "").trim().split(" ")[0] || "chant";
+}
+
 function _readChantSettings() {
   if (typeof window === "undefined") return { ...CHANT_DEFAULTS };
   try {
@@ -290,6 +304,8 @@ function _readChantSettings() {
       exhale: _clampChantValue(saved.exhale, CHANT_DEFAULTS.exhale),
       pause: _clampChantValue(saved.pause, CHANT_DEFAULTS.pause, CHANT_LIMITS.pauseMin),
       reps: _clampChantValue(saved.reps, CHANT_DEFAULTS.reps, CHANT_LIMITS.repsMin, CHANT_LIMITS.repsMax),
+      advance: !!saved.advance,
+      autoplay: !!saved.advance && !!saved.autoplay,
     };
   } catch (e) {
     return { ...CHANT_DEFAULTS };
@@ -314,7 +330,7 @@ function _saveChantSettings(settings) {
    own hands are ideal — accurate, consistent, no licensing needed. Any
    CC-BY / CC-BY-SA photo you add must be credited (set `credit`) in CREDITS.md. */
 const MUDRA_DIR = "./assets/mudras";
-const TWO_HANDED = { shakti: true, padma: true, granthita: true, hakini: true, sahasrara: true };
+const TWO_HANDED = { ganesha: true, shakti: true, padma: true, granthita: true, shivaLinga: true, hakini: true, sahasrara: true, anjali: true };
 const MUDRA_PHOTOS = {
   apana:     { file: "apana_palms_up.jpg", credit: null },
   shakti:    { file: "shakti.jpg",         credit: null },
@@ -408,7 +424,9 @@ const CARDS = [
   {
     id:"open", art:`${ART}/Ganesha.svg`, artAlt:"Ganeśa line drawing", real:true,
     eyebrow:"Opening · Obstacle Clearing", name:"Ganesha Invocation", sanskrit:"Gaṇapati",
-    mantra:"Om Gam Ganapataye Namaha", mantraCount:"×3",
+    mantra:"Om Gam Ganapataye Namaha", mantraCount:"×3", chantLabel:"Gam",
+    mudra:"ganesha", mudraName:"Ganesha Mudra", mudraLabel:"Mudra / Hand Position",
+    mudraHow:"Clasp the hands in front of the heart with elbows out, one palm facing the chest and the other outward; gently draw the hands apart without releasing the grip.",
     homeTradition:"Hindu / Gaṇapatya opening practice.",
     translation:"Om, Gaṃ, salutations to Ganapati.",
     visual:"Clear the path before ascending.", body:"Settle. Set the intention to remove obstruction.",
@@ -463,8 +481,11 @@ const CARDS = [
     id:"shiva", art:`${MANTRA_ART}/Trident_Yantra_of_Parama_Siva.svg`, artAlt:"Trident yantra of Parama Śiva", real:true, artFilter:"brightness(0) saturate(100%) invert(90%) sepia(18%) saturate(458%) hue-rotate(358deg) brightness(104%) contrast(91%)",
     eyebrow:"Additional Mantra", name:"Śiva Mantra", sanskrit:"Om Namah Shivaya",
     mantra:"Om Namah Shivaya", mantraCount:"×3",
+    chantLabel:"Namah Shivaya",
     homeTradition:"Śaiva Hindu practice.",
     translation:"Om, I bow to Śiva.",
+    mudra:"shivaLinga", mudraName:"Shiva Linga Mudra", mudraLabel:"Mudra / Hand Position",
+    mudraHow:"Cup the left hand near the lower belly or heart; place the right fist upright in the palm with the right thumb extended upward.",
     visual:"Pañcākṣara: Na, Ma, Śi, Va, Ya as earth, water, fire, air, and ether.",
     body:"Placed after Viśuddha because the throat's ether field opens the ascent into sound and space.",
     field:"#1b4960", panel:"#0e181d", accent:"#84c2e1", ring:"#47a4d1",
@@ -491,8 +512,11 @@ const CARDS = [
     id:"mani", art:`${MANTRA_ART}/Om-mani-padme-hum-mantra.svg`, artAlt:"Om Mani Padme Hum in Tibetan script", real:true, artFilter:"brightness(0) saturate(100%) invert(90%) sepia(18%) saturate(458%) hue-rotate(358deg) brightness(104%) contrast(91%)",
     eyebrow:"Additional Mantra", name:"Mani Mantra", sanskrit:"Om Mani Padme Hum",
     mantra:"Om Mani Padme Hum", mantraCount:"×3",
+    chantLabel:"Mani Padme",
     homeTradition:"Mahāyāna and Vajrayāna Buddhist practice, especially Tibetan.",
     translation:"Om, jewel in the lotus, hum.",
+    mudra:"anjali", mudraName:"Añjali Mudra", mudraLabel:"Mudra / Hand Position",
+    mudraHow:"Bring the palms together at the heart, or hold the hands softly at the heart as a steady, reverent anchor.",
     visual:"Violet-white compassion and spaciousness.", body:"Let the phrase settle rather than pushing for volume.",
     field:"#3d2457", panel:"#16101b", accent:"#b290d5", ring:"#8b58c0",
   },
@@ -630,8 +654,8 @@ function About({ onClose }) {
 
         <AboutSection title="How To Use The App">
           <p>Open <b style={{fontWeight:600}}>Chakra Flow</b>, then move through the cards by swiping, using the arrow buttons, or tapping the progress dots.</p>
-          <p>Tap <b style={{fontWeight:600}}>♪</b> for the current chakra drone. Use <b style={{fontWeight:600}}>Settings</b> to adjust tone tuning, bīja repetitions, chant pacing, and pause length.</p>
-          <p>Tap <b style={{fontWeight:600}}>pace chant</b> to start the bīja metronome. The yantra expands for inhale and contracts during the chant. While pacing is active, use the count button beside pace chant to begin, pause, or resume a countdown set.</p>
+          <p>Tap <b style={{fontWeight:600}}>♪</b> for the current card drone. Use <b style={{fontWeight:600}}>Settings</b> to adjust tone tuning, bīja repetitions, chant pacing, pause length, and countdown advancement.</p>
+          <p>Tap <b style={{fontWeight:600}}>pace chant</b> to start the chant metronome. The symbol expands for inhale and contracts during the chant. While pacing is active, use the count button beside pace chant to begin, pause, or resume a countdown set.</p>
           <p>Use <b style={{fontWeight:600}}>?</b> beside breath rows for technique references, and <b style={{fontWeight:600}}>View hand position</b> for mudra photos.</p>
         </AboutSection>
 
@@ -726,6 +750,25 @@ function Options({ chantSettings, toneTuning, onChange, onToneChange, onReset, o
       </div>
     </div>
   );
+  const toggleControl = (key, label, description) => {
+    const active = !!chantSettings[key];
+    return (
+      <div style={{ padding:"14px 0", borderTop:`1px solid ${accent}22` }}>
+        <button className="nav" type="button" role="switch" aria-checked={active}
+          onClick={() => onChange(key, !active)}
+          style={{ width:"100%", minHeight:48, borderRadius:24, border:`1px solid ${accent}${active ? "" : "55"}`,
+                   background:active ? `${accent}22` : "transparent", color:active ? CREAM : accent,
+                   cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between",
+                   gap:14, padding:"10px 15px", font:"15px 'EB Garamond',serif", letterSpacing:"0.06em",
+                   textAlign:"left" }}>
+          <span>{label}</span>
+          <span style={{ fontSize:12, textTransform:"uppercase", letterSpacing:"0.14em",
+                         opacity:active ? 1 : 0.72 }}>{active ? "On" : "Off"}</span>
+        </button>
+        <div style={{ color:MUTED, fontSize:13.2, lineHeight:1.45, marginTop:7 }}>{description}</div>
+      </div>
+    );
+  };
 
   return (
     <div role="dialog" aria-modal="true" aria-label="Options" onClick={onClose}
@@ -741,6 +784,8 @@ function Options({ chantSettings, toneTuning, onChange, onToneChange, onReset, o
         {control("exhale", "Exhale")}
         {control("pause", "Pause")}
         {control("reps", "Bīja repetitions")}
+        {toggleControl("advance", "Advance after count", "When a countdown completes, move to the next card and retune the drone without starting the next pacing cycle.")}
+        {chantSettings.advance && toggleControl("autoplay", "Autoplay counts", "After advancing, keep pacing active and begin the next card's countdown automatically when that card supports chant pacing.")}
         {toneControl}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
                       gap:12, marginTop:18, flexWrap:"wrap" }}>
@@ -821,10 +866,11 @@ function Deck() {
   const [breathHelpCard, setBreathHelpCard] = useState(null);
   const [sound, setSound] = useState(false);
   const [toneTuning, setToneTuning] = useState(_readToneTuning);
-  const [chanting, setChanting] = useState(false); // seed-chant pacer on/off
+  const [chanting, setChanting] = useState(false); // chant pacer on/off
   const [chantSettings, setChantSettings] = useState(_readChantSettings);
   const [chantCountdown, setChantCountdown] = useState(null);
   const chantCountdownRef = useRef(null);
+  const pendingAutoCountdownRef = useRef(false);
   const currentPhaseKindRef = useRef("");
   const symRef = useRef(null);
   const phaseRef = useRef(null);
@@ -832,6 +878,8 @@ function Deck() {
   const c = CARDS[idx];
   const homeCard = CARDS[0];
   const ui = view === "home" ? homeCard : c;
+  const canPaceChant = !!CHANTABLE_CARDS[c.id];
+  const chantReps = _chantReps(c, chantSettings);
 
   useEffect(() => {
     if (view !== "flow") { _droneSet(null); return; }
@@ -845,6 +893,13 @@ function Deck() {
 
   const updateChantSetting = useCallback((key, value) => {
     setChantSettings((prev) => {
+      if (key === "advance" || key === "autoplay") {
+        const next = { ...prev, [key]: !!value };
+        if (key === "advance" && !next.advance) next.autoplay = false;
+        if (key === "autoplay" && next.autoplay) next.advance = true;
+        _saveChantSettings(next);
+        return next;
+      }
       const isReps = key === "reps";
       const min = isReps ? CHANT_LIMITS.repsMin : key === "pause" ? CHANT_LIMITS.pauseMin : CHANT_LIMITS.min;
       const max = isReps ? CHANT_LIMITS.repsMax : CHANT_LIMITS.max;
@@ -872,31 +927,42 @@ function Deck() {
   }, []);
 
   const armChantCountdown = useCallback(() => {
-    if (!chanting || !CHANT_CARDS[c.id]) return;
+    if (!chanting || !canPaceChant) return;
     updateChantCountdown({
-      remaining: chantSettings.reps,
+      remaining: chantReps,
       skipCurrentExhale: currentPhaseKindRef.current === "exhale",
       paused: false,
     });
-  }, [chanting, c.id, chantSettings.reps, updateChantCountdown]);
+  }, [chanting, canPaceChant, chantReps, updateChantCountdown]);
 
   const toggleChantCountdown = useCallback(() => {
-    if (!chanting || !CHANT_CARDS[c.id]) return;
+    if (!chanting || !canPaceChant) return;
     const active = chantCountdownRef.current;
     if (!active) {
       armChantCountdown();
       return;
     }
     updateChantCountdown({ ...active, paused: !active.paused });
-  }, [chanting, c.id, armChantCountdown, updateChantCountdown]);
+  }, [chanting, canPaceChant, armChantCountdown, updateChantCountdown]);
 
   useEffect(() => {
+    if (pendingAutoCountdownRef.current) {
+      pendingAutoCountdownRef.current = false;
+      if (view === "flow" && chanting && CHANTABLE_CARDS[c.id]) {
+        updateChantCountdown({
+          remaining: _chantReps(c, chantSettings),
+          skipCurrentExhale: false,
+          paused: false,
+        });
+        return;
+      }
+    }
     updateChantCountdown(null);
   }, [idx, updateChantCountdown]);
 
   useEffect(() => {
     const sym = symRef.current;
-    if (!chanting || !CHANT_CARDS[c.id]) {
+    if (!chanting || !CHANTABLE_CARDS[c.id]) {
       if (sym) { sym.style.animation = ""; sym.style.transform = ""; }
       if (_drone && _drone.breath) _drone.breath.gain.value = 1;
       if (chantCountdownRef.current) updateChantCountdown(null);
@@ -910,7 +976,7 @@ function Deck() {
       ["Pause", chantSettings.pause, "low"],
     ].filter((phase) => phase[1] > 0);
     const total = cyc.reduce((s, p) => s + p[1], 0);
-    const seed = (c.mantra || "").trim().split(" ")[0];
+    const seed = _chantLabel(c);
     if (sym) sym.style.animation = "none";
     const markerHz = _toneHz(c.id, toneTuning);
     let raf, start = performance.now(), last = "", lastKind = "";
@@ -940,10 +1006,19 @@ function Deck() {
           } else {
             const remaining = Math.max(0, active.remaining - 1);
             if (remaining <= 0) {
+              const nextIdx = idx < CARDS.length - 1 ? idx + 1 : null;
               updateChantCountdown(null);
-              setSound(false);
-              _droneSet(null);
-              setChanting(false);
+              if (chantSettings.advance && nextIdx != null) {
+                const nextCard = CARDS[nextIdx];
+                const autoplayNext = !!(chantSettings.autoplay && CHANTABLE_CARDS[nextCard.id]);
+                pendingAutoCountdownRef.current = autoplayNext;
+                setIdx(nextIdx);
+                setChanting(autoplayNext);
+              } else {
+                setSound(false);
+                _droneSet(null);
+                setChanting(false);
+              }
               return;
             }
             updateChantCountdown({ ...active, remaining });
@@ -964,12 +1039,15 @@ function Deck() {
       if (_drone && _drone.breath) _drone.breath.gain.value = 1;
       currentPhaseKindRef.current = "";
     };
-  }, [chanting, idx, sound, toneTuning, chantSettings.inhale, chantSettings.exhale, chantSettings.pause, updateChantCountdown]);
+  }, [chanting, idx, sound, toneTuning, chantSettings.inhale, chantSettings.exhale, chantSettings.pause, chantSettings.advance, chantSettings.autoplay, updateChantCountdown]);
 
-  const go = useCallback((d) =>
-    setIdx((p) => Math.min(CARDS.length - 1, Math.max(0, p + d))), []);
+  const go = useCallback((d) => {
+    pendingAutoCountdownRef.current = false;
+    setIdx((p) => Math.min(CARDS.length - 1, Math.max(0, p + d)));
+  }, []);
 
   const openHome = useCallback(() => {
+    pendingAutoCountdownRef.current = false;
     setChanting(false);
     updateChantCountdown(null);
     setSound(false);
@@ -1006,7 +1084,7 @@ function Deck() {
     if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1);
     touch.current = null;
   };
-  const canCountChant = chanting && CHANT_CARDS[c.id];
+  const canCountChant = chanting && canPaceChant;
 
   return (
     <div onTouchStart={onStart} onTouchEnd={onEnd}
@@ -1062,7 +1140,7 @@ function Deck() {
         <div style={{ display:"flex", gap:4, flex:1, flexWrap:"nowrap" }}>
           {CARDS.map((cc, i) => (
             <button key={cc.id} aria-label={cc.name} className="nav"
-              onClick={() => setIdx(i)}
+              onClick={() => { pendingAutoCountdownRef.current = false; setIdx(i); }}
               style={{ width:i===idx?18:6, height:6, borderRadius:3, border:"none",
                        padding:0, cursor:"pointer", background:i===idx?c.accent:"rgba(243,236,221,0.25)",
                        transition:"all 0.35s ease" }} />
@@ -1131,7 +1209,7 @@ function Deck() {
           </div>
         </div>
 
-        {chanting && CHANT_CARDS[c.id] && (
+        {chanting && CHANTABLE_CARDS[c.id] && (
           <div ref={phaseRef} aria-live="polite"
             style={{ fontSize:12, letterSpacing:"0.3em", textTransform:"uppercase",
                      color:c.accent, minHeight:15, marginBottom:4 }} />
@@ -1160,7 +1238,7 @@ function Deck() {
             <div style={{ fontSize:10, letterSpacing:"0.16em", textTransform:"uppercase",
                           color:c.accent, marginBottom:6 }}>Mantra</div>
             <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:25, lineHeight:1.2, color:CREAM }}>
-              {c.mantra} <span style={{ color:c.accent, fontSize:18 }}>{CHANT_CARDS[c.id] ? `×${chantSettings.reps}` : c.mantraCount}</span>
+              {c.mantra} <span style={{ color:c.accent, fontSize:18 }}>{canPaceChant ? `×${chantReps}` : c.mantraCount}</span>
             </div>
             {c.mantra2 && (
               <div style={{ fontFamily:"'Cormorant Garamond',serif", fontStyle:"italic",
@@ -1168,10 +1246,11 @@ function Deck() {
                 then {c.mantra2} <span style={{ color:c.accent, fontStyle:"normal", fontSize:15 }}>{c.mantra2Count}</span>
               </div>
             )}
-            {CHANT_CARDS[c.id] && (
+            {CHANTABLE_CARDS[c.id] && (
               <div style={{ display:"inline-flex", flexWrap:"wrap", alignItems:"center", justifyContent:"center",
                             gap:8, marginTop:12 }}>
                 <button className="nav" onClick={() => {
+                  pendingAutoCountdownRef.current = false;
                   setChanting((v) => {
                     if (v) updateChantCountdown(null);
                     return !v;
@@ -1189,14 +1268,14 @@ function Deck() {
                 {canCountChant && (
                   <button className="nav" onClick={toggleChantCountdown}
                     aria-pressed={!!chantCountdown && !chantCountdown.paused}
-                    aria-label={chantCountdown ? (chantCountdown.paused ? "Resume bīja countdown" : "Pause bīja countdown") : `Start ${chantSettings.reps} bīja countdown`}
+                    aria-label={chantCountdown ? (chantCountdown.paused ? "Resume chant countdown" : "Pause chant countdown") : `Start ${chantReps} chant countdown`}
                     style={{ display:"inline-flex", alignItems:"center", gap:7,
                              padding:"5px 15px", borderRadius:22, cursor:"pointer",
                              border:`1px solid ${c.accent}${chantCountdown ? "" : "66"}`,
                              background:chantCountdown ? `${c.accent}22` : "transparent", color:c.accent,
                              fontFamily:"'EB Garamond',serif", fontSize:13, letterSpacing:"0.05em" }}>
                     <span style={{ fontSize:11 }}>{chantCountdown && !chantCountdown.paused ? "❚❚" : "▷"}</span>
-                    {chantCountdown ? (chantCountdown.paused ? `resume ${chantCountdown.remaining}` : `count ${chantCountdown.remaining}`) : `count ${chantSettings.reps}`}
+                    {chantCountdown ? (chantCountdown.paused ? `resume ${chantCountdown.remaining}` : `count ${chantCountdown.remaining}`) : `count ${chantReps}`}
                   </button>
                 )}
               </div>
@@ -1212,7 +1291,7 @@ function Deck() {
                           paddingTop:12, marginTop:4 }}>
               <div style={{ fontSize:10, letterSpacing:"0.16em", textTransform:"uppercase",
                             color:c.accent, marginBottom:3 }}>
-                Mudra{TWO_HANDED[c.mudra] ? <span style={{ opacity:0.6, fontSize:8.5 }}> · both hands</span> : null}
+                {c.mudraLabel || "Mudra"}{TWO_HANDED[c.mudra] ? <span style={{ opacity:0.6, fontSize:8.5 }}> · both hands</span> : null}
               </div>
               <div style={{ fontSize:16, color:CREAM, marginBottom:3 }}>{c.mudraName}</div>
               <div style={{ fontSize:13.5, lineHeight:1.45, color:MUTED }}>{c.mudraHow}</div>

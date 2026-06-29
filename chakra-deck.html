@@ -587,9 +587,13 @@ const CHANT_AUDIO = {
   inhaleGain: 0.1,
   exhaleGain: 1,
   markerGain: 0.5,
+  loudMarkerGain: 0.8,
+  masterGain: 0.14,
+  loudMasterGain: 0.24,
   transition: 1.6
 };
 let _drone = null;
+let _audioLoud = false;
 let _wakeLock = null;
 let _wakeLockWanted = false;
 let _wakeLockListening = false;
@@ -639,7 +643,7 @@ function _droneEnsure() {
   const breath = ctx.createGain(); // pacer-driven drone profile
   breath.gain.value = 1;
   const marker = ctx.createGain();
-  marker.gain.value = CHANT_AUDIO.markerGain;
+  marker.gain.value = _audioMarkerGain();
   breath.connect(master);
   master.connect(lp);
   marker.connect(lp);
@@ -654,6 +658,22 @@ function _droneEnsure() {
     lfo: null
   };
   return _drone;
+}
+function _audioMasterGain() {
+  return _audioLoud ? CHANT_AUDIO.loudMasterGain : CHANT_AUDIO.masterGain;
+}
+function _audioMarkerGain() {
+  return _audioLoud ? CHANT_AUDIO.loudMarkerGain : CHANT_AUDIO.markerGain;
+}
+function _audioSetLoud(enabled) {
+  _audioLoud = !!enabled;
+  if (!_drone) return;
+  if (_drone.marker) _drone.marker.gain.value = _audioMarkerGain();
+  if (!_drone.voices.length) return;
+  const now = _drone.ctx.currentTime;
+  _drone.master.gain.cancelScheduledValues(now);
+  _drone.master.gain.setValueAtTime(Math.max(_drone.master.gain.value, 0.0001), now);
+  _drone.master.gain.exponentialRampToValueAtTime(_audioMasterGain(), now + 0.35);
 }
 function _droneClear(a, release) {
   const now = a.ctx.currentTime;
@@ -719,7 +739,7 @@ function _droneSet(hz) {
   lfo.start(t0);
   a.lfo = lfo;
   a.master.gain.setValueAtTime(0.0001, t0);
-  a.master.gain.exponentialRampToValueAtTime(0.14, t0 + 0.9);
+  a.master.gain.exponentialRampToValueAtTime(_audioMasterGain(), t0 + 0.9);
 }
 
 /* ───────────────────── Chant pacer ─────────────────────
@@ -733,7 +753,8 @@ const CHANT_DEFAULTS = {
   pause: 1,
   reps: 9,
   advance: false,
-  autoplay: false
+  autoplay: false,
+  loud: false
 };
 const CHANT_LIMITS = {
   min: 1,
@@ -815,7 +836,7 @@ function _chantMarker(baseHz, kind) {
   if (!_drone || !baseHz || !_drone.marker) return;
   const a = _drone;
   if (a.ctx.state === "suspended") a.ctx.resume();
-  a.marker.gain.value = CHANT_AUDIO.markerGain;
+  a.marker.gain.value = _audioMarkerGain();
   const when = a.ctx.currentTime + 0.025;
   if (kind === "inhale") {
     _chantMarkerTone(a, baseHz * 2, 0.105, when, 4, 1.8);
@@ -852,7 +873,8 @@ function _readChantSettings() {
       pause: _clampChantValue(saved.pause, CHANT_DEFAULTS.pause, CHANT_LIMITS.pauseMin),
       reps: _clampChantValue(saved.reps, CHANT_DEFAULTS.reps, CHANT_LIMITS.repsMin, CHANT_LIMITS.repsMax),
       advance: !!saved.advance,
-      autoplay: !!saved.advance && !!saved.autoplay
+      autoplay: !!saved.advance && !!saved.autoplay,
+      loud: !!saved.loud
     };
   } catch (e) {
     return {
@@ -1581,7 +1603,7 @@ function About({
     style: {
       fontWeight: 600
     }
-  }, "Settings"), " to adjust tone tuning, b\u012Bja repetitions, chant pacing, pause length, and countdown advancement."), /*#__PURE__*/React.createElement("p", null, "Tap ", /*#__PURE__*/React.createElement("b", {
+  }, "Settings"), " to adjust tone tuning, b\u012Bja repetitions, chant pacing, pause length, countdown advancement, and loud speaker mode."), /*#__PURE__*/React.createElement("p", null, "Tap ", /*#__PURE__*/React.createElement("b", {
     style: {
       fontWeight: 600
     }
@@ -1863,7 +1885,7 @@ function Options({
       color: "rgba(243,236,221,0.5)",
       margin: "0 0 22px"
     }
-  }, "Practice settings"), control("inhale", "Inhale"), control("exhale", "Exhale"), control("pause", "Pause"), control("reps", "Bīja repetitions"), toggleControl("advance", "Advance after count", "When a countdown completes, move to the next card and retune the drone without starting the next pacing cycle."), chantSettings.advance && toggleControl("autoplay", "Autoplay counts", "After advancing, keep pacing active and begin the next card's countdown automatically when that card supports chant pacing."), toneControl, /*#__PURE__*/React.createElement("div", {
+  }, "Practice settings"), control("inhale", "Inhale"), control("exhale", "Exhale"), control("pause", "Pause"), control("reps", "Bīja repetitions"), toggleControl("advance", "Advance after count", "When a countdown completes, move to the next card and retune the drone without starting the next pacing cycle."), chantSettings.advance && toggleControl("autoplay", "Autoplay counts", "After advancing, keep pacing active and begin the next card's countdown automatically when that card supports chant pacing."), toneControl, toggleControl("loud", "Loud speaker mode", "Boosts the drone and chant markers for phone speakers. Leave this off with headphones."), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       alignItems: "center",
@@ -2080,13 +2102,16 @@ function Deck() {
     _droneSet(sound ? _toneHz(c.id, toneTuning) : null);
   }, [sound, idx, view, toneTuning]);
   useEffect(() => {
+    _audioSetLoud(chantSettings.loud);
+  }, [chantSettings.loud]);
+  useEffect(() => {
     _wakeLockSet(view === "flow");
     return () => _wakeLockRelease();
   }, [view]);
   useEffect(() => () => _droneSet(null), []);
   const updateChantSetting = useCallback((key, value) => {
     setChantSettings(prev => {
-      if (key === "advance" || key === "autoplay") {
+      if (key === "advance" || key === "autoplay" || key === "loud") {
         const next = {
           ...prev,
           [key]: !!value
@@ -2272,6 +2297,24 @@ function Deck() {
     _droneSet(null);
     setView("home");
   }, [updateChantCountdown]);
+  const stopPracticeAudio = useCallback(() => {
+    pendingAutoCountdownRef.current = false;
+    setChanting(false);
+    updateChantCountdown(null);
+    setSound(false);
+    _droneSet(null);
+  }, [updateChantCountdown]);
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") stopPracticeAudio();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", stopPracticeAudio);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", stopPracticeAudio);
+    };
+  }, [stopPracticeAudio]);
   useEffect(() => {
     const onKey = e => {
       if (e.key === "Escape") {
@@ -2302,9 +2345,19 @@ function Deck() {
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, [view]);
-  const onStart = e => touch.current = e.touches[0].clientX;
+  const modalOpen = showOptions || showInfo || photoCard || breathHelpCard;
+  const onStart = e => {
+    if (modalOpen) {
+      touch.current = null;
+      return;
+    }
+    touch.current = e.touches[0].clientX;
+  };
   const onEnd = e => {
-    if (view !== "flow") return;
+    if (view !== "flow" || modalOpen) {
+      touch.current = null;
+      return;
+    }
     if (touch.current == null) return;
     const dx = e.changedTouches[0].clientX - touch.current;
     if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1);

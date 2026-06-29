@@ -130,10 +130,12 @@ import ChakraCards from "./chakra-cards.jsx";
   count; tapping it again pauses or resumes the countdown.
 - **⛶ View hand position** (under the Mudra) opens a photo of the hand position in a lightbox.
 - **⚙ Options** adjusts the global mantra-chant inhale, exhale, pause timing, bīja repetitions,
-  countdown advancement/autoplay, and tone tuning.
+  countdown advancement/autoplay, tone tuning, and default-off loud speaker mode.
   Settings are saved on the device.
 - The hosted PWA keeps the screen awake while **Chakra Flow** is open when the browser supports
   Wake Lock. This requires HTTPS or localhost; `file://` cannot do it.
+  Practice audio stops when the app is hidden or the page is being unloaded, so a phone call or app
+  switch should not leave the drone running in the background.
 - The **ⓘ** button (top-right) opens **About**, with sections for app use, practice notes, and media credits.
 - Respects `prefers-reduced-motion` (disables the float, fade, and tint transition).
 

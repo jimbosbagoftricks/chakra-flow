@@ -94,10 +94,14 @@ const CHANT_AUDIO = {
   inhaleGain: 0.1,
   exhaleGain: 1,
   markerGain: 0.5,
+  loudMarkerGain: 0.8,
+  masterGain: 0.14,
+  loudMasterGain: 0.24,
   transition: 1.6,
 };
 
 let _drone = null;
+let _audioLoud = false;
 let _wakeLock = null;
 let _wakeLockWanted = false;
 let _wakeLockListening = false;
@@ -148,10 +152,26 @@ function _droneEnsure() {
   const breath = ctx.createGain();   // pacer-driven drone profile
   breath.gain.value = 1;
   const marker = ctx.createGain();
-  marker.gain.value = CHANT_AUDIO.markerGain;
+  marker.gain.value = _audioMarkerGain();
   breath.connect(master); master.connect(lp); marker.connect(lp); lp.connect(ctx.destination);
   _drone = { ctx, master, breath, marker, voices: [], markerVoices: [], lfo: null };
   return _drone;
+}
+function _audioMasterGain() {
+  return _audioLoud ? CHANT_AUDIO.loudMasterGain : CHANT_AUDIO.masterGain;
+}
+function _audioMarkerGain() {
+  return _audioLoud ? CHANT_AUDIO.loudMarkerGain : CHANT_AUDIO.markerGain;
+}
+function _audioSetLoud(enabled) {
+  _audioLoud = !!enabled;
+  if (!_drone) return;
+  if (_drone.marker) _drone.marker.gain.value = _audioMarkerGain();
+  if (!_drone.voices.length) return;
+  const now = _drone.ctx.currentTime;
+  _drone.master.gain.cancelScheduledValues(now);
+  _drone.master.gain.setValueAtTime(Math.max(_drone.master.gain.value, 0.0001), now);
+  _drone.master.gain.exponentialRampToValueAtTime(_audioMasterGain(), now + 0.35);
 }
 function _droneClear(a, release) {
   const now = a.ctx.currentTime;
@@ -197,7 +217,7 @@ function _droneSet(hz) {
   const lg = a.ctx.createGain(); lg.gain.value = 0.02;
   lfo.connect(lg); lg.connect(a.master.gain); lfo.start(t0); a.lfo = lfo;
   a.master.gain.setValueAtTime(0.0001, t0);
-  a.master.gain.exponentialRampToValueAtTime(0.14, t0 + 0.9);
+  a.master.gain.exponentialRampToValueAtTime(_audioMasterGain(), t0 + 0.9);
 }
 
 /* ───────────────────── Chant pacer ─────────────────────
@@ -205,7 +225,7 @@ function _droneSet(hz) {
    independent of each card's breathing practice (which is named, not paced). The
    symbol is the metronome: expand to prepare, hold, contract on the chant,
    then hold again; when the tone is on, the drone swells and dips with it. */
-const CHANT_DEFAULTS = { inhale: 4, exhale: 4, pause: 1, reps: 9, advance: false, autoplay: false };
+const CHANT_DEFAULTS = { inhale: 4, exhale: 4, pause: 1, reps: 9, advance: false, autoplay: false, loud: false };
 const CHANT_LIMITS = { min: 1, pauseMin: 0, max: 12, repsMin: 1, repsMax: 108 };
 const CHANT_STORAGE = "chakraChantSettings";
 const BIJA_CHANT_CARDS = { root: 1, sacral: 1, solar: 1, heart: 1, throat: 1, thirdeye: 1, crown: 1 };
@@ -265,7 +285,7 @@ function _chantMarker(baseHz, kind) {
   if (!_drone || !baseHz || !_drone.marker) return;
   const a = _drone;
   if (a.ctx.state === "suspended") a.ctx.resume();
-  a.marker.gain.value = CHANT_AUDIO.markerGain;
+  a.marker.gain.value = _audioMarkerGain();
   const when = a.ctx.currentTime + 0.025;
   if (kind === "inhale") {
     _chantMarkerTone(a, baseHz * 2, 0.105, when, 4, 1.8);
@@ -306,6 +326,7 @@ function _readChantSettings() {
       reps: _clampChantValue(saved.reps, CHANT_DEFAULTS.reps, CHANT_LIMITS.repsMin, CHANT_LIMITS.repsMax),
       advance: !!saved.advance,
       autoplay: !!saved.advance && !!saved.autoplay,
+      loud: !!saved.loud,
     };
   } catch (e) {
     return { ...CHANT_DEFAULTS };
@@ -654,7 +675,7 @@ function About({ onClose }) {
 
         <AboutSection title="How To Use The App">
           <p>Open <b style={{fontWeight:600}}>Chakra Flow</b>, then move through the cards by swiping, using the arrow buttons, or tapping the progress dots.</p>
-          <p>Tap <b style={{fontWeight:600}}>♪</b> for the current card drone. Use <b style={{fontWeight:600}}>Settings</b> to adjust tone tuning, bīja repetitions, chant pacing, pause length, and countdown advancement.</p>
+          <p>Tap <b style={{fontWeight:600}}>♪</b> for the current card drone. Use <b style={{fontWeight:600}}>Settings</b> to adjust tone tuning, bīja repetitions, chant pacing, pause length, countdown advancement, and loud speaker mode.</p>
           <p>Tap <b style={{fontWeight:600}}>pace chant</b> to start the chant metronome. The symbol expands for inhale and contracts during the chant. While pacing is active, use the count button beside pace chant to begin, pause, or resume a countdown set.</p>
           <p>Use <b style={{fontWeight:600}}>?</b> beside breath rows for technique references, and <b style={{fontWeight:600}}>View hand position</b> for mudra photos.</p>
         </AboutSection>
@@ -787,6 +808,7 @@ function Options({ chantSettings, toneTuning, onChange, onToneChange, onReset, o
         {toggleControl("advance", "Advance after count", "When a countdown completes, move to the next card and retune the drone without starting the next pacing cycle.")}
         {chantSettings.advance && toggleControl("autoplay", "Autoplay counts", "After advancing, keep pacing active and begin the next card's countdown automatically when that card supports chant pacing.")}
         {toneControl}
+        {toggleControl("loud", "Loud speaker mode", "Boosts the drone and chant markers for phone speakers. Leave this off with headphones.")}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
                       gap:12, marginTop:18, flexWrap:"wrap" }}>
           <button className="nav" onClick={onReset}
@@ -886,6 +908,9 @@ function Deck() {
     _droneSet(sound ? _toneHz(c.id, toneTuning) : null);
   }, [sound, idx, view, toneTuning]);
   useEffect(() => {
+    _audioSetLoud(chantSettings.loud);
+  }, [chantSettings.loud]);
+  useEffect(() => {
     _wakeLockSet(view === "flow");
     return () => _wakeLockRelease();
   }, [view]);
@@ -893,7 +918,7 @@ function Deck() {
 
   const updateChantSetting = useCallback((key, value) => {
     setChantSettings((prev) => {
-      if (key === "advance" || key === "autoplay") {
+      if (key === "advance" || key === "autoplay" || key === "loud") {
         const next = { ...prev, [key]: !!value };
         if (key === "advance" && !next.advance) next.autoplay = false;
         if (key === "autoplay" && next.autoplay) next.advance = true;
@@ -1055,6 +1080,26 @@ function Deck() {
     setView("home");
   }, [updateChantCountdown]);
 
+  const stopPracticeAudio = useCallback(() => {
+    pendingAutoCountdownRef.current = false;
+    setChanting(false);
+    updateChantCountdown(null);
+    setSound(false);
+    _droneSet(null);
+  }, [updateChantCountdown]);
+
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") stopPracticeAudio();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", stopPracticeAudio);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", stopPracticeAudio);
+    };
+  }, [stopPracticeAudio]);
+
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") { setShowInfo(false); setShowOptions(false); setPhotoCard(null); setBreathHelpCard(null); }
@@ -1076,9 +1121,13 @@ function Deck() {
     return () => window.removeEventListener("popstate", onPop);
   }, [view]);
 
-  const onStart = (e) => (touch.current = e.touches[0].clientX);
+  const modalOpen = showOptions || showInfo || photoCard || breathHelpCard;
+  const onStart = (e) => {
+    if (modalOpen) { touch.current = null; return; }
+    touch.current = e.touches[0].clientX;
+  };
   const onEnd = (e) => {
-    if (view !== "flow") return;
+    if (view !== "flow" || modalOpen) { touch.current = null; return; }
     if (touch.current == null) return;
     const dx = e.changedTouches[0].clientX - touch.current;
     if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1);
